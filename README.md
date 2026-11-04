@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Sushree Elina Sahoo — Animated React Portfolio
 
 Responsive portfolio built with React, Vite, Tailwind CSS, Lucide icons, and custom CSS animations.
@@ -25,3 +26,6 @@ npm run preview
 - To add a resume download, place your PDF at `public/resume.pdf` and add a link with `href="/resume.pdf" download`.
 
 The content uses project and education details supplied in the conversation. Please verify all details before publishing.
+=======
+# MyPortfolio
+>>>>>>> cb66a125e42e86f88b4d021e40166b11f9b914d8
