@@ -1,880 +1,512 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Github,
-  ExternalLink,
   Code2,
   Flame,
-  RefreshCw,
-  GitCommitHorizontal,
-  Users,
-  BookOpen,
   CalendarDays,
-  AlertCircle,
+  ExternalLink,
+  RefreshCw,
+  Heart,
 } from "lucide-react";
 
-// ==========================================
-// GITHUB CONFIGURATION
-// ==========================================
+const USERNAME = "sushreeelinas-builds";
 
-const username = "sushreeelinas-builds";
+const CONTRIBUTION_API = `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`;
+const GITHUB_API = `https://api.github.com/users/${USERNAME}`;
 
-const githubProfile = `https://github.com/${username}`;
-
-const contributionAPI =
-  `https://github-contributions-api.jogruber.de/v4/${username}?y=last`;
-
-const profileAPI =
-  `https://api.github.com/users/${username}`;
-
-// Refresh interval: 5 minutes
-const REFRESH_INTERVAL = 5 * 60 * 1000;
-
-// ==========================================
-// THEME
-// ==========================================
-
-const calendarColors = [
-  "#161b22",
-  "#064e3b",
-  "#047857",
-  "#10b981",
-  "#34d399",
-];
-
-const floatTransition = (duration, delay = 0) => ({
-  duration,
-  delay,
-  repeat: Infinity,
-  ease: "easeInOut",
-  repeatType: "reverse",
-});
-
-// ==========================================
-// DATE HELPERS
-// ==========================================
-
-function getDateKey(date) {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
-}
-
-function calculateStreaks(contributions) {
-  const contributionMap = new Map(
-    contributions.map((day) => [day.date, day.count])
+const getStreaks = (contributions) => {
+  const activeDates = new Set(
+    contributions
+      .filter((day) => day.count > 0)
+      .map((day) => day.date)
   );
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  let longest = 0;
+  let current = 0;
+  let running = 0;
 
-  const hasContribution = (date) =>
-    (contributionMap.get(getDateKey(date)) || 0) > 0;
-
-  // Current streak
-  const currentCheck = new Date(today);
-
-  // If there is no contribution today, check yesterday.
-  if (!hasContribution(currentCheck)) {
-    currentCheck.setDate(currentCheck.getDate() - 1);
-  }
-
-  let currentStreak = 0;
-
-  while (hasContribution(currentCheck)) {
-    currentStreak++;
-    currentCheck.setDate(currentCheck.getDate() - 1);
-  }
-
-  // Longest streak
-  let longestStreak = 0;
-  let runningStreak = 0;
-
-  const sortedDays = [...contributions].sort(
-    (a, b) => a.date.localeCompare(b.date)
-  );
-
-  sortedDays.forEach((day) => {
+  contributions.forEach((day) => {
     if (day.count > 0) {
-      runningStreak++;
-      longestStreak = Math.max(longestStreak, runningStreak);
+      running++;
+      longest = Math.max(longest, running);
     } else {
-      runningStreak = 0;
+      running = 0;
     }
   });
 
-  return {
-    currentStreak,
-    longestStreak,
-  };
-}
-
-// ==========================================
-// CONTRIBUTION CALENDAR DATA
-// ==========================================
-
-function buildCalendar(contributions) {
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
 
-  const start = new Date(today);
-  start.setDate(start.getDate() - 364);
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
 
-  // Start from Sunday so the calendar has complete weeks.
-  start.setDate(start.getDate() - start.getDay());
+    return `${year}-${month}-${day}`;
+  };
 
-  const contributionMap = new Map(
-    contributions.map((day) => [day.date, day.count])
+  let checkDate = activeDates.has(formatDate(today))
+    ? today
+    : yesterday;
+
+  while (activeDates.has(formatDate(checkDate))) {
+    current++;
+    checkDate = new Date(checkDate);
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  return { longest, current };
+};
+
+const getContributionLevel = (count, maxCount) => {
+  if (count === 0) return 0;
+
+  const ratio = count / Math.max(maxCount, 1);
+
+  if (ratio <= 0.25) return 1;
+  if (ratio <= 0.5) return 2;
+  if (ratio <= 0.75) return 3;
+
+  return 4;
+};
+
+const getCalendarWeeks = (contributions) => {
+  if (!contributions.length) return [];
+
+  const firstDate = new Date(`${contributions[0].date}T00:00:00`);
+  const lastDate = new Date(
+    `${contributions[contributions.length - 1].date}T00:00:00`
   );
 
+  const start = new Date(firstDate);
+  start.setDate(start.getDate() - start.getDay());
+
   const weeks = [];
+  let currentWeek = [];
+
+  const contributionMap = new Map(
+    contributions.map((day) => [day.date, day])
+  );
+
   const cursor = new Date(start);
 
-  while (cursor <= today) {
-    const week = [];
+  while (cursor <= lastDate || currentWeek.length > 0) {
+    const dateKey = [
+      cursor.getFullYear(),
+      String(cursor.getMonth() + 1).padStart(2, "0"),
+      String(cursor.getDate()).padStart(2, "0"),
+    ].join("-");
 
-    for (let day = 0; day < 7; day++) {
-      const dateKey = getDateKey(cursor);
+    const day = contributionMap.get(dateKey);
 
-      const count = contributionMap.get(dateKey) || 0;
+    currentWeek.push({
+      date: dateKey,
+      count: day?.count || 0,
+      level: day?.level || 0,
+    });
 
-      let level = 0;
+    if (currentWeek.length === 7) {
+      weeks.push(currentWeek);
+      currentWeek = [];
 
-      if (count > 0) level = 1;
-      if (count >= 3) level = 2;
-      if (count >= 6) level = 3;
-      if (count >= 10) level = 4;
-
-      week.push({
-        date: dateKey,
-        count,
-        level,
-        future: cursor > today,
-      });
-
-      cursor.setDate(cursor.getDate() + 1);
+      if (cursor >= lastDate) break;
     }
 
-    weeks.push(week);
+    cursor.setDate(cursor.getDate() + 1);
+
+    if (cursor > lastDate && currentWeek.length === 0) break;
   }
 
   return weeks;
-}
-
-// ==========================================
-// MONTH LABELS
-// ==========================================
-
-function getMonthLabels(weeks) {
-  const labels = [];
-  let previousMonth = -1;
-
-  weeks.forEach((week, index) => {
-    const firstValidDay = week.find(
-      (day) => day.date
-    );
-
-    if (!firstValidDay) return;
-
-    const month = new Date(
-      `${firstValidDay.date}T00:00:00`
-    ).getMonth();
-
-    if (month !== previousMonth) {
-      labels.push({
-        index,
-        name: new Date(
-          `${firstValidDay.date}T00:00:00`
-        ).toLocaleDateString("en-US", {
-          month: "short",
-        }),
-      });
-
-      previousMonth = month;
-    }
-  });
-
-  return labels;
-}
-
-// ==========================================
-// REUSABLE STAT CARD
-// ==========================================
-
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  description,
-  color = "emerald",
-}) {
-  const colors = {
-    emerald: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
-    cyan: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20",
-    violet: "text-violet-400 bg-violet-400/10 border-violet-400/20",
-  };
-
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a1114]/80 p-5 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/30"
-    >
-      <div
-        className={`mb-5 flex h-11 w-11 items-center justify-center rounded-xl border ${colors[color]}`}
-      >
-        <Icon size={21} />
-      </div>
-
-      <p className="text-2xl font-extrabold text-white sm:text-3xl">
-        {value.toLocaleString("en-US")}
-      </p>
-
-      <p className="mt-2 text-sm font-semibold text-gray-300">
-        {label}
-      </p>
-
-      <p className="mt-1 text-xs text-gray-500">
-        {description}
-      </p>
-    </motion.div>
-  );
-}
-
-// ==========================================
-// MAIN COMPONENT
-// ==========================================
+};
 
 export default function GitHubActivity() {
-  const reduceMotion = useReducedMotion();
-
   const [contributions, setContributions] = useState([]);
   const [profile, setProfile] = useState(null);
-
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
 
-  const [lastUpdated, setLastUpdated] = useState(null);
-
-  // ========================================
-  // FETCH ACTUAL GITHUB DATA
-  // ========================================
-
-  const fetchGitHubData = useCallback(async (manual = false) => {
-    if (manual) {
-      setRefreshing(true);
-    } else {
-      setLoading(true);
-    }
-
+  const fetchGitHubData = useCallback(async () => {
+    setLoading(true);
     setError("");
 
     try {
       const [contributionResponse, profileResponse] =
         await Promise.all([
-          fetch(contributionAPI, {
-            cache: "no-store",
-            headers: {
-              "Cache-Control": "no-cache",
-            },
-          }),
-
-          fetch(profileAPI, {
-            cache: "no-store",
-            headers: {
-              Accept: "application/vnd.github+json",
-            },
-          }),
+          fetch(CONTRIBUTION_API),
+          fetch(GITHUB_API),
         ]);
 
       if (!contributionResponse.ok) {
-        throw new Error(
-          "Unable to fetch GitHub contribution data."
-        );
+        throw new Error("Unable to load GitHub contributions.");
       }
 
       if (!profileResponse.ok) {
-        throw new Error(
-          "Unable to fetch GitHub profile information."
-        );
+        throw new Error("Unable to load GitHub profile.");
       }
 
-      const contributionData =
-        await contributionResponse.json();
+      const contributionData = await contributionResponse.json();
+      const profileData = await profileResponse.json();
 
-      const profileData =
-        await profileResponse.json();
-
-      if (!Array.isArray(contributionData.contributions)) {
-        throw new Error("Invalid contribution data received.");
-      }
-
-      setContributions(contributionData.contributions);
+      setContributions(contributionData.contributions || []);
       setProfile(profileData);
-      setLastUpdated(new Date());
-
     } catch (err) {
-      console.error("GitHub API error:", err);
-
       setError(
-        err.message ||
-        "Unable to load GitHub activity. Please try again."
+        "GitHub activity is temporarily unavailable. Please try again."
       );
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   }, []);
 
-  // ========================================
-  // INITIAL LOAD + AUTOMATIC REFRESH
-  // ========================================
-
   useEffect(() => {
     fetchGitHubData();
-
-    const interval = setInterval(() => {
-      fetchGitHubData();
-    }, REFRESH_INTERVAL);
-
-    return () => clearInterval(interval);
   }, [fetchGitHubData]);
 
-  // ========================================
-  // DYNAMIC STATISTICS
-  // ========================================
+  const totalContributions = useMemo(
+    () => contributions.reduce((sum, day) => sum + day.count, 0),
+    [contributions]
+  );
 
-  const totalContributions = useMemo(() => {
-    return contributions.reduce(
-      (total, day) => total + day.count,
-      0
-    );
-  }, [contributions]);
+  const maxContribution = useMemo(
+    () => Math.max(0, ...contributions.map((day) => day.count)),
+    [contributions]
+  );
 
-  const { currentStreak, longestStreak } = useMemo(
-    () => calculateStreaks(contributions),
+  const streaks = useMemo(
+    () => getStreaks(contributions),
     [contributions]
   );
 
   const weeks = useMemo(
-    () => buildCalendar(contributions),
+    () => getCalendarWeeks(contributions),
     [contributions]
   );
 
-  const monthLabels = useMemo(
-    () => getMonthLabels(weeks),
-    [weeks]
-  );
+  const monthLabels = useMemo(() => {
+    const labels = [];
+    let previousMonth = -1;
 
-  // ========================================
-  // ANIMATION SETTINGS
-  // ========================================
+    weeks.forEach((week, index) => {
+      const firstDay = week.find((day) => {
+        const date = new Date(`${day.date}T00:00:00`);
+        return date.getDate() === 1;
+      });
 
-  const glowAnimation = (values) =>
-    reduceMotion ? {} : values;
+      if (firstDay) {
+        const date = new Date(`${firstDay.date}T00:00:00`);
+        const month = date.getMonth();
 
-  // ========================================
-  // LOADING SCREEN
-  // ========================================
+        if (month !== previousMonth) {
+          labels.push({
+            index,
+            label: date.toLocaleString("en-US", {
+              month: "short",
+            }),
+          });
 
-  if (loading && contributions.length === 0) {
-    return (
-      <section
-        id="github"
-        className="flex min-h-[450px] items-center justify-center bg-[#020609] text-white"
-      >
-        <div className="text-center">
-          <Github
-            size={40}
-            className="mx-auto mb-5 animate-pulse text-emerald-400"
-          />
+          previousMonth = month;
+        }
+      }
+    });
 
-          <p className="text-sm font-semibold text-gray-300">
-            Loading GitHub Activity...
-          </p>
+    return labels;
+  }, [weeks]);
 
-          <p className="mt-2 text-xs text-gray-500">
-            Fetching your latest contributions
-          </p>
-        </div>
-      </section>
-    );
-  }
+  const getLevel = (day) => {
+    if (day.count === 0) return 0;
 
-  // ========================================
-  // MAIN UI
-  // ========================================
+    if (day.level >= 1 && day.level <= 4) {
+      return day.level;
+    }
+
+    return getContributionLevel(day.count, maxContribution);
+  };
+
+  const levelColors = [
+    "bg-[#18243a]",
+    "bg-[#075c46]",
+    "bg-[#07976a]",
+    "bg-[#18d58a]",
+    "bg-[#65ff9b]",
+  ];
+
+  const formattedDate = (date) =>
+    new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
 
   return (
     <section
-      id="github"
-      className="relative isolate overflow-hidden bg-[#020609] px-4 py-20 text-white sm:px-8 lg:px-16"
+      id="github-activity"
+      className="relative isolate overflow-hidden bg-[#050817] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
     >
-      {/* BACKGROUND */}
-
+      {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-
-        <div className="absolute inset-0 bg-gradient-to-br from-[#03110b] via-[#080713] to-[#030407]" />
-
-        <motion.div
-          animate={glowAnimation({
-            x: [0, 50, -30, 0],
-            y: [0, -30, 30, 0],
-            scale: [1, 1.2, 0.9, 1],
-          })}
-          transition={floatTransition(12)}
-          className="absolute -left-40 top-10 h-[420px] w-[420px] rounded-full bg-emerald-500/20 blur-[140px]"
-        />
-
-        <motion.div
-          animate={glowAnimation({
-            x: [0, -50, 30, 0],
-            y: [0, 40, -30, 0],
-            scale: [1, 0.9, 1.2, 1],
-          })}
-          transition={floatTransition(15, 1)}
-          className="absolute -right-40 top-40 h-[450px] w-[450px] rounded-full bg-violet-600/20 blur-[150px]"
-        />
-
-        <motion.div
-          animate={glowAnimation({
-            x: [0, 40, -30, 0],
-            y: [0, -20, 20, 0],
-          })}
-          transition={floatTransition(14, 2)}
-          className="absolute bottom-[-180px] left-[35%] h-[400px] w-[400px] rounded-full bg-cyan-500/15 blur-[130px]"
-        />
-
-        <motion.div
-          animate={glowAnimation({
-            backgroundPosition: [
-              "0px 0px",
-              "45px 45px",
-            ],
-          })}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="absolute inset-0 opacity-[0.12]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(16,185,129,0.4) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(139,92,246,0.4) 1px, transparent 1px)
-            `,
-            backgroundSize: "45px 45px",
-          }}
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#020609]/20 to-[#020609]/80" />
+        <div className="absolute -left-20 top-20 h-64 w-64 rounded-full bg-violet-600/15 blur-[110px]" />
+        <div className="absolute -right-20 top-40 h-64 w-64 rounded-full bg-emerald-500/15 blur-[110px]" />
+        <div className="absolute bottom-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[110px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1250px]">
+      {/* Floating orbs */}
+      <div className="pointer-events-none absolute left-[8%] top-28 h-12 w-12 rounded-full bg-violet-500/80 shadow-[0_0_45px_12px_rgba(139,92,246,0.35)] blur-[1px]" />
+      <div className="pointer-events-none absolute right-[9%] top-40 h-9 w-9 rounded-full bg-emerald-400/80 shadow-[0_0_45px_12px_rgba(52,211,153,0.35)] blur-[1px]" />
 
-        {/* ===================================
-            MAIN HEADING
-        =================================== */}
+      {/* Same Home container alignment */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
 
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.2)]">
+            <Code2 size={30} />
+          </div>
+
+          <div className="hidden h-14 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent sm:block" />
+
+          <div>
+            <h2 className="bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
+              GitHub Activity
+            </h2>
+
+            
+          </div>
+        </motion.div>
+
+        {/* Calendar card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-12 text-center"
+          className="rounded-2xl border border-cyan-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_45px_rgba(34,211,238,0.06)] backdrop-blur-xl sm:p-6 lg:p-8"
         >
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-400">
-            MY CODING JOURNEY
-          </p>
-
-          <h2 className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 bg-clip-text text-3xl font-extrabold uppercase tracking-tight text-transparent sm:text-5xl">
-            GitHub Calendar
-          </h2>
-
-          <div className="mx-auto mt-5 h-1 w-24 rounded-full bg-gradient-to-r from-emerald-400 to-violet-500 shadow-[0_0_20px_rgba(16,185,129,0.7)]" />
-
-          <p className="mt-5 text-sm text-gray-400">
-            A live overview of my coding consistency and contributions.
-          </p>
-        </motion.div>
-
-        {/* ===================================
-            ERROR MESSAGE
-        =================================== */}
-
-        {error && (
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-red-400/20 bg-red-400/5 p-4 text-sm text-red-300">
-            <div className="flex items-center gap-2">
-              <AlertCircle size={18} />
-              {error}
-            </div>
+          {/* Calendar header */}
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-base font-semibold text-slate-200 sm:text-xl">
+              {loading
+                ? "Loading GitHub activity..."
+                : `${totalContributions.toLocaleString()} contributions in the last year`}
+            </h3>
 
             <button
-              onClick={() => fetchGitHubData(true)}
-              className="font-semibold underline"
+              type="button"
+              onClick={fetchGitHubData}
+              disabled={loading}
+              className="flex items-center gap-2 text-xs text-slate-400 transition hover:text-cyan-300 disabled:opacity-50 sm:text-sm"
             >
-              Try again
+              <RefreshCw
+                size={14}
+                className={loading ? "animate-spin" : ""}
+              />
+              Refresh activity
             </button>
           </div>
-        )}
 
-        {/* ===================================
-            CONTRIBUTION CALENDAR
-        =================================== */}
-
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9 }}
-          className="relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-[#090e0c]/85 p-4 shadow-[0_0_35px_rgba(16,185,129,0.08)] backdrop-blur-xl transition-all duration-500 hover:border-emerald-400/40 sm:p-7"
-        >
-          <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-emerald-500/10 blur-[100px]" />
-
-          {/* CALENDAR HEADER */}
-
-          <div className="relative mb-7 flex flex-wrap items-center justify-between gap-4">
-
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-400">
-                <Code2 size={21} />
-              </div>
-
-              <div>
-                <h3 className="text-sm font-bold text-white sm:text-base">
-                  Contribution Activity
-                </h3>
-
-                <p className="mt-1 text-xs text-gray-500">
-                  @{username}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-
+          {error ? (
+            <div className="rounded-xl border border-red-400/20 bg-red-400/5 p-6 text-center">
+              <p className="text-sm text-red-300">{error}</p>
               <button
-                type="button"
-                onClick={() => fetchGitHubData(true)}
-                disabled={refreshing}
-                className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs font-semibold text-emerald-300 transition-all hover:border-emerald-400/50 hover:bg-emerald-400/10 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={fetchGitHubData}
+                className="mt-3 text-sm text-cyan-300 underline"
               >
-                <RefreshCw
-                  size={14}
-                  className={refreshing ? "animate-spin" : ""}
-                />
-
-                {refreshing ? "Refreshing..." : "Refresh"}
+                Try again
               </button>
-
-              <a
-                href={githubProfile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden items-center gap-2 rounded-full border border-violet-400/20 bg-violet-400/5 px-4 py-2 text-xs font-semibold text-violet-300 transition hover:border-violet-400/50 hover:bg-violet-400/10 sm:flex"
-              >
-                <Github size={14} />
-                View Profile
-                <ExternalLink size={12} />
-              </a>
-
             </div>
-          </div>
-
-          {/* CONTRIBUTION TOTAL */}
-
-          <div className="relative mb-6 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-gray-200">
-              {totalContributions.toLocaleString("en-US")} contributions in the last year
-            </p>
-
-            <p className="text-[10px] text-gray-500">
-              Last 365 days
-            </p>
-          </div>
-
-          {/* CALENDAR GRID */}
-
-          <div className="relative overflow-x-auto pb-4">
-
-            <div className="min-w-[760px]">
-
-              {/* MONTH LABELS */}
-
-              <div
-                className="mb-3 grid h-5 gap-[4px]"
-                style={{
-                  gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
-                }}
-              >
-                {monthLabels.map((month) => (
-                  <span
-                    key={`${month.name}-${month.index}`}
-                    className="text-[11px] font-semibold text-gray-300"
+          ) : loading ? (
+            <div className="flex h-32 items-center justify-center">
+              <RefreshCw className="animate-spin text-cyan-400" size={26} />
+            </div>
+          ) : (
+            <>
+              {/* Month labels and contribution grid */}
+              <div className="overflow-x-auto pb-3">
+                <div className="min-w-[650px]">
+                  <div
+                    className="mb-2 grid gap-[3px]"
                     style={{
-                      gridColumn: `${month.index + 1} / span 4`,
+                      gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
                     }}
                   >
-                    {month.name}
-                  </span>
-                ))}
+                    {weeks.map((_, index) => {
+                      const month = monthLabels.find(
+                        (item) => item.index === index
+                      );
+
+                      return (
+                        <div
+                          key={index}
+                          className="h-5 whitespace-nowrap text-[10px] text-slate-400 sm:text-xs"
+                        >
+                          {month?.label}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="grid grid-cols-[25px_1fr] gap-2">
+                    <div className="grid grid-rows-7 gap-[3px] text-[10px] text-slate-500">
+                      <span></span>
+                      <span>Mon</span>
+                      <span></span>
+                      <span>Wed</span>
+                      <span></span>
+                      <span>Fri</span>
+                      <span></span>
+                    </div>
+
+                    <div
+                      className="grid gap-[3px]"
+                      style={{
+                        gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
+                      }}
+                    >
+                      {weeks.map((week, weekIndex) => (
+                        <div
+                          key={weekIndex}
+                          className="grid grid-rows-7 gap-[3px]"
+                        >
+                          {week.map((day) => (
+                            <div
+                              key={day.date}
+                              title={`${day.count} contributions on ${formattedDate(day.date)}`}
+                              className={`aspect-square w-full min-w-[5px] rounded-[2px] transition-all duration-200 hover:scale-125 hover:ring-1 hover:ring-cyan-300 ${levelColors[getLevel(day)]}`}
+                            />
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex gap-2">
+              {/* Calendar footer */}
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <a
+                  href="https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-slate-400 transition hover:text-cyan-300 sm:text-sm"
+                >
+                  Learn how we count contributions ↗
+                </a>
 
-                {/* WEEKDAY LABELS */}
-
-                <div className="grid w-7 shrink-0 grid-rows-7 gap-[4px] text-[10px] text-gray-500">
-                  <span />
-                  <span>Mon</span>
-                  <span />
-                  <span>Wed</span>
-                  <span />
-                  <span>Fri</span>
-                  <span />
-                </div>
-
-                {/* CONTRIBUTION SQUARES */}
-
-                <div className="grid flex-1 grid-flow-col grid-rows-7 gap-[4px]">
-
-                  {weeks.map((week, weekIndex) =>
-                    week.map((day, dayIndex) => (
-                      <div
-                        key={`${weekIndex}-${dayIndex}`}
-                        title={
-                          day.future
-                            ? ""
-                            : `${day.count} contributions on ${day.date}`
-                        }
-                        className="aspect-square min-w-[9px] rounded-[3px] transition-all duration-200 hover:scale-125 hover:ring-1 hover:ring-white/50"
-                        style={{
-                          backgroundColor: day.future
-                            ? "transparent"
-                            : calendarColors[day.level],
-                          opacity: day.future ? 0 : 1,
-                        }}
-                      />
-                    ))
-                  )}
-
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <span>Less</span>
+                  {levelColors.map((color, index) => (
+                    <span
+                      key={index}
+                      className={`h-3 w-3 rounded-[3px] ${color}`}
+                    />
+                  ))}
+                  <span>More</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* CALENDAR LEGEND */}
-
-          <div className="relative mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
-
-            <p className="text-[10px] font-medium text-gray-500 sm:text-xs">
-              {lastUpdated
-                ? `Last fetched: ${lastUpdated.toLocaleTimeString()}`
-                : "Live contribution activity"}
-            </p>
-
-            <div className="flex items-center gap-2">
-
-              <span className="text-[10px] text-gray-500">
-                Less
-              </span>
-
-              {calendarColors.map((color, index) => (
-                <span
-                  key={index}
-                  className="h-3 w-3 rounded-[3px]"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-
-              <span className="text-[10px] text-gray-500">
-                More
-              </span>
-
-            </div>
-          </div>
+            </>
+          )}
         </motion.div>
 
-        {/* ===================================
-            GITHUB STATS HEADING
-        =================================== */}
-
+        {/* Statistics */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-10 mt-20 text-center"
+          className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-violet-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_40px_rgba(139,92,246,0.08)] backdrop-blur-xl md:grid-cols-4 md:gap-0 md:p-5"
         >
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-violet-400">
-            MY DEVELOPMENT RECORD
-          </p>
-
-          <h2 className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 bg-clip-text text-3xl font-extrabold uppercase tracking-tight text-transparent sm:text-5xl">
-            GitHub Stats
-          </h2>
-
-          <div className="mx-auto mt-5 h-1 w-24 rounded-full bg-gradient-to-r from-emerald-400 to-violet-500" />
-        </motion.div>
-
-        {/* ===================================
-            DYNAMIC STATS CARDS
-        =================================== */}
-
-        {profile && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-            <StatCard
-              icon={GitCommitHorizontal}
-              label="Total Contributions"
-              value={totalContributions}
-              description="Contributions in the last year"
-              color="emerald"
-            />
-
-            <StatCard
-              icon={Flame}
-              label="Current Streak"
-              value={currentStreak}
-              description="Consecutive active days"
-              color="violet"
-            />
-
-            <StatCard
-              icon={BookOpen}
-              label="Public Repositories"
-              value={profile.public_repos}
-              description="Public GitHub projects"
-              color="cyan"
-            />
-
-            <StatCard
-              icon={Users}
-              label="Followers"
-              value={profile.followers}
-              description={`${profile.following} following`}
-              color="emerald"
-            />
-
-          </div>
-        )}
-
-        {/* ===================================
-            LONGEST STREAK CARD
-        =================================== */}
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mx-auto mt-7 max-w-[650px]"
-        >
-          <div className="relative overflow-hidden rounded-2xl border border-violet-400/20 bg-[#0b0f12]/90 p-7 text-center shadow-[0_0_35px_rgba(139,92,246,0.08)] backdrop-blur-xl transition duration-500 hover:border-violet-400/40">
-
-            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-violet-500/15 blur-[90px]" />
-
-            <div className="relative">
-
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-400/10 text-violet-300">
-                <Flame size={28} />
-              </div>
-
-              <p className="text-4xl font-extrabold text-cyan-300">
-                {longestStreak}
-              </p>
-
-              <h3 className="mt-2 font-bold text-white">
-                Longest Contribution Streak
+          {/* Contributions */}
+          <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
+            <Code2 className="shrink-0 text-cyan-400" size={30} />
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white sm:text-2xl">
+                {loading ? "—" : totalContributions.toLocaleString()}
               </h3>
-
-              <p className="mt-2 text-xs text-gray-500">
-                Your longest consecutive active period in the available contribution history.
+              <p className="text-xs text-slate-400 sm:text-sm">
+                Contributions
               </p>
-
             </div>
           </div>
-        </motion.div>
 
-        {/* ===================================
-            PROFILE INFORMATION
-        =================================== */}
-
-        {profile && (
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mx-auto mt-8 max-w-[650px] rounded-2xl border border-emerald-400/20 bg-[#090e0c]/80 p-5 backdrop-blur-xl sm:p-7"
-          >
-            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-
-              <img
-                src={profile.avatar_url}
-                alt={`${username} GitHub avatar`}
-                className="h-16 w-16 rounded-full border-2 border-emerald-400/50"
-              />
-
-              <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-white">
-                  {profile.name || profile.login}
-                </h3>
-
-                <p className="mt-1 text-xs text-gray-400">
-                  @{profile.login}
-                </p>
-
-                <p className="mt-2 text-xs text-gray-500">
-                  {profile.bio || "Developer exploring technology and building projects."}
-                </p>
-              </div>
-
-              <a
-                href={githubProfile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/5 px-5 py-2.5 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-400/10"
-              >
-                Visit Profile
-                <ExternalLink size={14} />
-              </a>
-
+          {/* Longest streak */}
+          <div className="flex items-center gap-3 px-2 py-3 md:border-r md:border-white/10 md:px-4">
+            <Flame className="shrink-0 text-emerald-400" size={32} />
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white sm:text-2xl">
+                {loading ? "—" : streaks.longest}
+              </h3>
+              <p className="text-xs text-slate-400 sm:text-sm">
+                Longest Streak
+              </p>
             </div>
-          </motion.div>
-        )}
+          </div>
 
-        {/* ===================================
-            EXPLORE GITHUB BUTTON
-        =================================== */}
+          {/* Current streak */}
+          <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
+            <CalendarDays className="shrink-0 text-violet-400" size={30} />
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white sm:text-2xl">
+                {loading ? "—" : streaks.current}
+              </h3>
+              <p className="text-xs text-slate-400 sm:text-sm">
+                Current Streak
+              </p>
+            </div>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mt-12 text-center"
-        >
+          {/* Profile */}
           <a
-            href={githubProfile}
+            href={`https://github.com/${USERNAME}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-3 rounded-full border border-emerald-400/30 bg-emerald-400/5 px-7 py-3 text-sm font-semibold text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/50 hover:bg-violet-400/10 hover:text-violet-300"
+            className="flex items-center gap-3 px-2 py-3 transition hover:opacity-80 md:px-4"
           >
-            <Github size={18} />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-300">
+              <Code2 size={23} />
+            </div>
 
-            Explore My GitHub
-
-            <ExternalLink
-              size={16}
-              className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
-            />
+            <div className="min-w-0">
+              <h3 className="truncate text-sm font-bold text-white">
+                {profile?.login || USERNAME}
+              </h3>
+              <p className="flex items-center gap-1 text-xs text-emerald-400">
+                View Profile <ExternalLink size={12} />
+              </p>
+            </div>
           </a>
         </motion.div>
 
+        {/* Extra profile information */}
+        {profile && (
+          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500">
+            <span>
+              <strong className="text-slate-300">
+                {profile.public_repos}
+              </strong>{" "}
+              Public Repositories
+            </span>
+            <span>
+              <strong className="text-slate-300">
+                {profile.followers}
+              </strong>{" "}
+              Followers
+            </span>
+            <span>
+              <strong className="text-slate-300">
+                {profile.following}
+              </strong>{" "}
+              Following
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );

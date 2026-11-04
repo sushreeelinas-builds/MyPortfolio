@@ -5,7 +5,6 @@ import {
   Github,
   Linkedin,
   Mail,
-  MapPin,
   Send,
   Sparkles,
 } from "lucide-react";
@@ -33,7 +32,7 @@ export default function Contact() {
     <>
       <section
         id="contact"
-        className="relative isolate overflow-hidden bg-[#020b13] px-5 py-10 sm:px-8 sm:py-12 lg:px-16"
+        className="relative isolate overflow-hidden bg-[#020b13] px-6 py-12 sm:px-10 sm:py-16 lg:px-20"
       >
         {/* Animated Background */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -104,7 +103,9 @@ export default function Contact() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#020b13]/20 via-transparent to-[#020b13]/70" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl">
+        {/* Same Home container alignment */}
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+
           {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
@@ -130,7 +131,8 @@ export default function Contact() {
           </motion.div>
 
           {/* Contact Layout */}
-          <div className="grid gap-5 lg:grid-cols-[0.8fr_1.7fr]">
+          <div className="grid w-full gap-5 lg:grid-cols-[0.8fr_1.7fr]">
+
             {/* Left Contact Information */}
             <motion.div
               initial={{ opacity: 0, x: -35 }}
@@ -147,24 +149,20 @@ export default function Contact() {
 
                 <a
                   href={`mailto:${contactEmail}`}
-                  className="block pl-4 text-sm leading-7 text-gray-400 transition-colors hover:text-emerald-300"
+                  className="block break-all pl-4 text-sm leading-7 text-gray-400 transition-colors hover:text-emerald-300"
                 >
                   {contactEmail}
                 </a>
               </div>
 
-              {/* Location */}
+              {/* Contact */}
               <div className="mb-6">
                 <h3 className="mb-3 border-l-2 border-violet-400 pl-4 text-lg font-semibold text-white">
                   Contact
                 </h3>
 
-                <div className="flex items-start gap-3 pl-4 text-sm leading-7 text-gray-400">
-                 
-                  <span>
-                    7326057454
-                    
-                  </span>
+                <div className="pl-4 text-sm leading-7 text-gray-400">
+                  7326057454
                 </div>
               </div>
 
@@ -238,7 +236,14 @@ export default function Contact() {
                   />
                 </div>
 
-                
+                {/* Subject */}
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="Subject *"
+                  required
+                  className="w-full rounded-lg border border-white/15 bg-[#0a2030]/80 px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-gray-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/10"
+                />
 
                 {/* Message */}
                 <textarea
@@ -269,8 +274,8 @@ export default function Contact() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#02080e] px-6 py-6 sm:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
+      <footer className="border-t border-white/10 bg-[#02080e] px-6 py-6 sm:px-10 lg:px-20">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
           <a
             className="text-2xl font-bold tracking-wider text-white"
             href="#home"

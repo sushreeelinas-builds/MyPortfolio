@@ -14,46 +14,14 @@ const particles = Array.from({ length: 28 }, (_, i) => ({
 export default function About() {
   return (
     <section
-      className="about-section px-24 pt-8 pb-8 section relative isolate w-full overflow-hidden bg-[#050610] px-6 sm:px-10 lg:px-20"
       id="about"
+      className="about-section section relative isolate w-full overflow-hidden bg-[#050610] px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-20"
     >
       {/* Animated background */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-      
-      <div className="relative z-10 mb-10 px-4 text-center">
-
-  <motion.p
-    initial={{ opacity: 0, y: 15 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.6 }}
-    className="mb-1 mt-6 text-xs font-semibold uppercase tracking-[0.35em] eyebrow text-violet-300"
-  >
-    GET TO KNOW ME
-  </motion.p>
-
-  <motion.h2
-    initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
-    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8 }}
-    className="bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-xs font-extrabold tracking-tight text-transparent sm:text-4xl"
-  >
-    About Me
-  </motion.h2>
-
-  <motion.div
-    initial={{ width: 0, opacity: 0 }}
-    whileInView={{ width: 100, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8, delay: 0.25 }}
-    className="mx-auto mt-2 h-1 rounded-full bg-gradient-to-r from-teal-400 to-violet-400"
-  />
-</div>
-
         {/* Moving grid */}
         <motion.div
           className="absolute inset-0 opacity-[0.12]"
@@ -181,77 +149,107 @@ export default function About() {
           />
         ))}
 
-        {/* Dark overlay for text readability */}
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#050610]/30 via-transparent to-[#050610]/70" />
       </div>
 
-      {/* About content */}
-      <div className="about-grid relative z-10">
-        {/* Profile animation */}
-        <motion.div
-          initial={{ opacity: 0, x: -45, scale: 0.95 }}
-          whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex min-h-[280px] items-center justify-center sm:min-h-[300px]"
-        >
-          <ProfileOrbit />
-        </motion.div>
-
-        {/* About text */}
-        <motion.div
-          initial={{ opacity: 0, x: 45 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-          className="about-copy"
-        >
-
-          <h3 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
-            Learning. Building.
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-300 bg-clip-text text-transparent">
-              Growing.
-            </span>
-          </h3>
-
-          <p className="mt-7 leading-8 text-gray-300">
-            Hi, I'm{" "}
-            <span className="font-semibold text-white ">
-              Sushree Elina Sahoo
-            </span>
-            , an MCA student and aspiring Software Developer passionate
-            about creating 
-            <br/>modern digital experiences.
-          </p>
-
-          <p className="mt-4 leading-8 text-gray-400">
-            I work with React, JavaScript, Tailwind CSS, Node.js, Python,
-            and MongoDB. I enjoy developing responsive  <br/> web applications
-            and exploring AI to solve real-world
-            problems.
-          </p>
-
-          <p className="mt-4 leading-8 text-gray-400">
-            Through projects like ResuNova AI 
-            applications, I'm building practical skills in frontend
-            development,  <br/>backend integration, APIs, and data analysis.
-            I'm always ready to learn, experiment, and turn ideas into <br/>
-            working solutions.
-          </p>
-
-          <motion.a
-            href="#projects"
-            whileHover={{
-              scale: 1.04,
-              boxShadow: "0 0 30px rgba(139,92,246,0.35)",
-            }}
-            whileTap={{ scale: 0.97 }}
-            className="mt-7 inline-flex rounded-xl border border-violet-400/40 bg-violet-500/10 px-6 py-4 font-medium text-violet-200 transition-colors hover:border-blue-400/70 hover:bg-blue-500/15"
+      {/* Main aligned container */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
+        {/* Section heading */}
+        <div className="relative z-10 mb-7 px-4 text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-1 mt-2 text-xs font-semibold uppercase tracking-[0.35em] text-violet-300"
           >
-            Explore My Work ↗
-          </motion.a>
-        </motion.div>
+            GET TO KNOW ME
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl"
+          >
+            About Me
+          </motion.h2>
+
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            whileInView={{ width: 100, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="mx-auto mt-2 h-1 rounded-full bg-gradient-to-r from-teal-400 to-violet-400"
+          />
+        </div>
+
+        {/* About content */}
+        <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+          {/* Profile animation */}
+          <motion.div
+            initial={{ opacity: 0, x: -45, scale: 0.95 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex min-h-[280px] w-full items-center justify-center sm:min-h-[350px]"
+          >
+            <ProfileOrbit />
+          </motion.div>
+
+          {/* About text */}
+          <motion.div
+            initial={{ opacity: 0, x: 45 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+            className="flex w-full flex-col items-start"
+          >
+            <h3 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
+              Learning. Building.
+              <br />
+              <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-300 bg-clip-text text-transparent">
+                Growing.
+              </span>
+            </h3>
+
+            <p className="mt-5 leading-8 text-gray-300">
+              Hi, I'm{" "}
+              <span className="font-semibold text-white">
+                Sushree Elina Sahoo
+              </span>
+              , an MCA student and aspiring Software Developer passionate
+              about creating modern digital experiences.
+            </p>
+
+            <p className="mt-3 leading-8 text-gray-400">
+              I work with React, JavaScript, Tailwind CSS, Node.js, Python,
+              and MongoDB. I enjoy developing responsive web applications
+              and exploring AI to solve real-world problems.
+            </p>
+
+            <p className="mt-3 leading-8 text-gray-400">
+              Through projects like ResuNova AI applications, I'm building
+              practical skills in frontend development, backend integration,
+              APIs, and data analysis. I'm always ready to learn, experiment,
+              and turn ideas into working solutions.
+            </p>
+
+            <motion.a
+              href="#projects"
+              whileHover={{
+                scale: 1.04,
+                boxShadow: "0 0 30px rgba(139,92,246,0.35)",
+              }}
+              whileTap={{ scale: 0.97 }}
+              className="mt-5 inline-flex rounded-xl border border-violet-400/40 bg-violet-500/10 px-6 py-3.5 font-medium text-violet-200 transition-colors hover:border-blue-400/70 hover:bg-blue-500/15"
+            >
+              Explore My Work ↗
+            </motion.a>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

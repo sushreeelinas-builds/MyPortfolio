@@ -7,7 +7,6 @@ import {
   MapPin,
   Award,
   School,
-  Sparkles,
 } from "lucide-react";
 
 const education = [
@@ -26,7 +25,6 @@ const education = [
     degree: "Bachelor of Science (Chemistry)",
     place: "Adikavi Sarala Das (Degree) College, Tirtol",
     period: "2023 – 2025",
-   
     icon: BookOpen,
     type: "Graduation",
     color: "from-emerald-400 to-green-600",
@@ -36,8 +34,6 @@ const education = [
     degree: "Higher Secondary",
     place: "Adikavi Sarala Das (Degree) College, Tirtol",
     period: "2021 – 2022",
-   
-      
     icon: School,
     type: "Intermediate",
     color: "from-purple-400 to-violet-600",
@@ -47,7 +43,6 @@ const education = [
     degree: "Matriculation",
     place: "Purna Chandra Government High School, Raghunathpur",
     period: "2019 – 2020",
-    
     icon: Award,
     type: "Secondary Education",
     color: "from-green-400 to-emerald-600",
@@ -59,11 +54,10 @@ export default function Education() {
   return (
     <section
       id="education"
-      className="relative isolate overflow-hidden bg-[#050505] px-5 py-18 text-white md:px-10 lg:px-20"
+      className="relative isolate overflow-hidden bg-[#050505] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
     >
       {/* Animated Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-
         <motion.div
           animate={{
             x: [0, 100, -50, 0],
@@ -75,7 +69,7 @@ export default function Education() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute -left-40 top-20 h-90 w-96 rounded-full bg-green-600/20 blur-[120px]"
+          className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-green-600/20 blur-[120px]"
         />
 
         <motion.div
@@ -116,42 +110,44 @@ export default function Education() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-6xl">
+      {/* Same Home container alignment */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
 
         {/* Heading */}
-         <motion.p
-    initial={{ opacity: 0, y: 15 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="mb-3 items-center justify-center text-center mt-10 text-xs font-semibold uppercase tracking-[0.35em] text-green-400"
-  >
-    MY EDUCATION
-  </motion.p>
+        <div className="mb-10 text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-3 mt-2 text-xs font-semibold uppercase tracking-[0.35em] text-green-400"
+          >
+            MY EDUCATION
+          </motion.p>
 
-  <motion.h2
-    initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
-    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8 }}
-    className="text-4xl items-center justify-center text-center  font-extrabold tracking-tight sm:text-5xl md:text-6xl"
-  >
-    My Educational{" "}
-    <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500 bg-clip-text text-transparent">
-      Journey.
-    </span>
-  </motion.h2>
+          <motion.h2
+            initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
+          >
+            My Educational{" "}
+            <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500 bg-clip-text text-transparent">
+              Journey.
+            </span>
+          </motion.h2>
 
-  <motion.div
-    initial={{ width: 0, opacity: 0 }}
-    whileInView={{ width: 100, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8, delay: 0.25 }}
-    className="mx-auto mb-10 mt-5 h-1 rounded-full bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500"
-  />
-
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            whileInView={{ width: 100, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="mx-auto mt-5 h-1 rounded-full bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500"
+          />
+        </div>
 
         {/* Timeline */}
-        <div className="relative mx-auto max-w-4xl">
+        <div className="relative mx-auto w-full max-w-4xl">
 
           {/* Timeline Line */}
           <div className="absolute bottom-10 left-[21px] top-10 w-[2px] bg-gradient-to-b from-green-400 via-violet-500 to-transparent md:left-1/2 md:-translate-x-1/2" />
@@ -178,9 +174,7 @@ export default function Education() {
                     delay: index * 0.15,
                   }}
                   className={`relative flex items-start gap-5 md:w-full ${
-                    isLeft
-                      ? "md:flex-row"
-                      : "md:flex-row-reverse"
+                    isLeft ? "md:flex-row" : "md:flex-row-reverse"
                   }`}
                 >
                   {/* Timeline Icon */}
@@ -196,41 +190,43 @@ export default function Education() {
 
                   {/* Education Card */}
                   <div
-                    className={`group w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4  backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-green-400/40 hover:bg-white/[0.07] hover:shadow-[0_0_35px_rgba(34,197,94,0.12)] md:w-[44%] ${
-                      isLeft
-                        ? "md:mr-auto"
-                        : "md:ml-auto"
+                    className={`group w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-green-400/40 hover:bg-white/[0.07] hover:shadow-[0_0_35px_rgba(34,197,94,0.12)] md:w-[44%] ${
+                      isLeft ? "md:mr-auto" : "md:ml-auto"
                     }`}
                   >
                     <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
-                      <span className={`rounded-full bg-gradient-to-r ${item.color} bg-clip-text text-s font-bold text-transparent`}>
+                      <span
+                        className={`rounded-full bg-gradient-to-r ${item.color} bg-clip-text text-sm font-bold text-transparent`}
+                      >
                         {item.type}
                       </span>
 
-                      <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1. text-xs text-gray-300">
+                      <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-300">
                         <CalendarDays size={11} />
                         {item.period}
                       </span>
                     </div>
 
-                    <h3 className="mb-1 text-x font-bold leading-snug text-white transition-colors group-hover:text-green-300 sm:text-xl">
+                    <h3 className="mb-1 text-lg font-bold leading-snug text-white transition-colors group-hover:text-green-300 sm:text-xl">
                       {item.degree}
                     </h3>
 
                     <p className="mb-2 flex items-start gap-2 text-sm text-gray-400">
                       <MapPin
                         size={16}
-                        className="mt-0. shrink-0 text-green-400"
+                        className="mt-0.5 shrink-0 text-green-400"
                       />
                       {item.place}
                     </p>
 
-                    <p className="text-sm leading-6 text-gray-400">
-                      {item.detail}
-                    </p>
+                    {item.detail && (
+                      <p className="text-sm leading-6 text-gray-400">
+                        {item.detail}
+                      </p>
+                    )}
 
-                    <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2">
-                      <span className="text-x text-gray-500">
+                    <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2">
+                      <span className="text-xs text-gray-500">
                         Academic Achievement
                       </span>
 
@@ -247,20 +243,6 @@ export default function Education() {
             })}
           </div>
         </div>
-
-        {/* Bottom Message */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mt-20 text-center"
-        >
-          
-           
-          
-        </motion.div>
-
       </div>
     </section>
   );

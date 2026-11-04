@@ -24,7 +24,8 @@ const technologies = [
 
 export default function ProfileOrbit() {
   return (
-    <div className="relative mx-auto flex aspect-square w-full max-w-[660px] items-center justify-center">
+    <div className="relative mx-auto flex aspect-square w-full max-w-[600px] items-center justify-center">
+
       {/* Outer orbit */}
       <motion.div
         animate={{ rotate: 360 }}

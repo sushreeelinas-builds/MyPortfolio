@@ -115,18 +115,20 @@ export default function Achievements() {
   return (
     <section
       id="achievements"
-      className="relative isolate overflow-hidden bg-[#020504] px-5 py-20 text-white sm:px-8 lg:px-16"
+      className="relative isolate overflow-hidden bg-[#020504] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
     >
       <ExperienceBackground />
 
-      <div className="relative z-10 mx-auto max-w-6xl">
+      {/* Same Home container alignment */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
+
         {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-14 text-center"
+          className="mb-10 text-center"
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-1 text-xs font-semibold tracking-[0.2em] text-emerald-300">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
@@ -139,19 +141,18 @@ export default function Achievements() {
               Achievements
             </span>
           </h2>
+
           <motion.div
-    initial={{ width: 0, opacity: 0 }}
-    whileInView={{ width: 100, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8, delay: 0.25 }}
-    className="mx-auto mb-10 mt-5 h-1 rounded-full bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500"
-  />
-
-
+            initial={{ width: 0, opacity: 0 }}
+            whileInView={{ width: 100, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="mx-auto mt-5 h-1 rounded-full bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500"
+          />
         </motion.div>
 
         {/* Achievement cards */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item, index) => {
             const Icon = item.icon;
 
@@ -188,7 +189,7 @@ export default function Achievements() {
 
                 <div className="relative z-10">
                   {/* Icon and label */}
-                  <div className="mb-7 flex items-center justify-between">
+                  <div className="mb-7 flex items-center justify-between gap-3">
                     <motion.div
                       whileHover={{ rotate: 12, scale: 1.12 }}
                       transition={{ type: "spring", stiffness: 300 }}
@@ -214,9 +215,6 @@ export default function Achievements() {
                   <p className="mt-4 text-sm leading-6 text-gray-400">
                     {item.desc}
                   </p>
-
-                  {/* Card footer */}
-                  
                 </div>
 
                 {/* Bottom accent line */}
