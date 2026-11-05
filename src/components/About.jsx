@@ -158,14 +158,14 @@ export default function About() {
         {/* Section heading */}
         <div className="relative z-10 mb-7 px-4 text-center">
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-1 mt-2 text-xs font-semibold uppercase tracking-[0.35em] text-violet-300"
-          >
-            GET TO KNOW ME
-          </motion.p>
+  initial={{ opacity: 0, y: 15 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.6 }}
+  className="mb-1 mt-2 bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-xs font-semibold uppercase tracking-[0.35em] text-transparent"
+>
+  GET TO KNOW ME
+</motion.p>
 
           <motion.h2
             initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}

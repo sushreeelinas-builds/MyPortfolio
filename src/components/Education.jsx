@@ -116,14 +116,13 @@ export default function Education() {
         {/* Heading */}
         <div className="mb-10 text-center">
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-3 mt-2 text-xs font-semibold uppercase tracking-[0.35em] text-green-400"
-          >
-            MY EDUCATION
-          </motion.p>
-
+  initial={{ opacity: 0, y: 15 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  className="mb-3 mt-2 bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-xs font-semibold uppercase tracking-[0.35em] text-transparent"
+>
+  MY EDUCATION
+</motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}

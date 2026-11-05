@@ -2,7 +2,10 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Code2 } from "lucide-react";
 
+// ======================================
 // PROJECT DATA
+// ======================================
+
 const projects = [
   {
     num: "01",
@@ -42,7 +45,10 @@ const projects = [
   },
 ];
 
+// ======================================
 // ANIMATED BACKGROUND
+// ======================================
+
 function AnimatedBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -111,7 +117,10 @@ function AnimatedBackground() {
   );
 }
 
+// ======================================
 // PROJECT CARD
+// ======================================
+
 function ProjectCard({ project, index }) {
   return (
     <motion.div
@@ -122,74 +131,145 @@ function ProjectCard({ project, index }) {
         duration: 0.6,
         delay: index * 0.1,
       }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -5 }}
       className="group relative"
     >
       {/* GLOWING FRAME */}
+
       <div
-        className={`absolute -inset-[1px] rounded-xl bg-gradient-to-br ${project.color} opacity-40 blur-[2px] transition duration-500 group-hover:opacity-100`}
+        className={`absolute -inset-[1px] rounded-xl bg-gradient-to-br ${project.color} opacity-40 blur-[2px] transition-all duration-500 group-hover:opacity-100`}
       />
 
       {/* MAIN CARD */}
+
       <div
-        className="relative min-h-[260px] overflow-hidden rounded-xl border border-white/15 bg-[#050b16] sm:min-h-[275px]"
+        className="relative min-h-[280px] overflow-hidden rounded-xl border border-white/15 bg-[#050b16] sm:min-h-[290px]"
         style={{
           boxShadow: `0 0 12px ${project.glow}`,
         }}
       >
         {/* BACKGROUND IMAGE */}
+
         <motion.img
           src={project.image}
           alt={project.title}
           loading="lazy"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.7 }}
-          className="absolute inset-0 h-full w-full object-cover opacity-55"
+          className="
+            absolute inset-0 h-full w-full object-cover
+            opacity-80
+            transition-all duration-700 ease-in-out
+            group-hover:scale-105
+            group-hover:brightness-[0.65]
+            group-hover:blur-[1px]
+          "
         />
 
-        {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030914] via-[#050b18]/45 to-[#050b18]/10" />
+        {/* BLACK GLASS BLUR OVERLAY */}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#020609]/95 via-transparent to-[#020609]/10" />
+        <div
+          className="
+            pointer-events-none absolute inset-0 z-[1]
+            bg-black/10
+            transition-all duration-700
+            group-hover:bg-black/35
+            group-hover:backdrop-blur-[2px]
+          "
+        />
 
-        {/* CARD CONTENT */}
-        <div className="relative z-10 flex min-h-[260px] flex-col justify-between p-3.5 sm:min-h-[275px] sm:p-4">
+        {/* DEFAULT CARD CONTENT */}
 
-          {/* TOP */}
-          <div className="flex flex-wrap items-center gap-2">
+        <div
+          className="
+            absolute inset-0 z-10 flex flex-col
+            justify-between p-4
+            transition-all duration-300
+            group-hover:opacity-0
+            group-hover:scale-95
+            group-hover:pointer-events-none
+          "
+        >
+          <div className="flex items-center justify-between">
             <span
-              className={`rounded-full bg-gradient-to-r ${project.color} px-2.5 py-1 text-xs font-black text-white`}
+              className={`rounded-full bg-gradient-to-r ${project.color} px-3 py-1 text-xs font-black text-white`}
             >
               {project.num}
             </span>
 
-            <span className="rounded-full border border-teal-300/30 bg-[#06121b]/80 px-2.5 py-1 text-[8px] font-bold tracking-wider text-teal-300 backdrop-blur-md">
+            <span className="rounded-full border border-teal-300/60 bg-black/30 px-3 py-1 text-[9px] font-bold tracking-wider text-white backdrop-blur-sm">
               {project.type}
             </span>
           </div>
 
-          {/* PROJECT INFORMATION */}
-          <div className="mt-10 max-w-[95%] sm:max-w-[85%]">
-
-            <h3 className="text-lg font-extrabold leading-tight text-white transition group-hover:text-teal-300 sm:text-xl">
+          <div>
+            <h3 className="text-xl font-extrabold text-white drop-shadow-lg sm:text-2xl">
               {project.title}
             </h3>
 
-            <p className="mt-1.5 line-clamp-2 text-[10px] leading-relaxed text-gray-300 sm:text-[11px]">
+            
+
+            <div
+              className={`mt-3 h-[3px] w-12 rounded-full bg-gradient-to-r ${project.color}`}
+            />
+          </div>
+        </div>
+
+        {/* ======================================
+            TRANSPARENT SLIDING DETAILS PANEL
+        ====================================== */}
+
+        <div
+          className="
+            absolute inset-0 z-20
+            flex flex-col justify-between
+            bg-transparent
+            p-4
+            transition-all duration-700
+            ease-[cubic-bezier(0.22,1,0.36,1)]
+            translate-x-0
+            md:-translate-x-full
+            md:group-hover:translate-x-0
+            md:group-focus-within:translate-x-0
+          "
+        >
+          {/* TOP DETAILS */}
+
+          <div>
+            <div className="flex items-center justify-between gap-2">
+              <span
+                className={`rounded-full bg-gradient-to-r ${project.color} px-3 py-1 text-xs font-black text-white`}
+              >
+                {project.num}
+              </span>
+
+              <span className="rounded-full border border-teal-300/70 bg-transparent px-3 py-1 text-[8px] font-bold tracking-wider text-white">
+                {project.type}
+              </span>
+            </div>
+
+            {/* TITLE */}
+
+            <h3 className="mt-5 text-xl font-extrabold leading-tight text-white drop-shadow-lg sm:text-2xl">
+              {project.title}
+            </h3>
+
+            {/* DESCRIPTION */}
+
+            <p className="mt-2 max-w-[95%] text-[11px] leading-relaxed text-white drop-shadow-md sm:text-xs">
               {project.desc}
             </p>
 
             {/* TECHNOLOGIES */}
-            <div className="mt-2">
-              <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-teal-300">
-                Technologies
+
+            <div className="mt-4">
+              <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.2em] text-teal-300 drop-shadow-md">
+                Technologies Used
               </p>
 
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1.5">
                 {project.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="rounded-full border border-teal-400/40 bg-[#06111c]/80 px-2 py-0.5 text-[8px] text-white backdrop-blur-md transition hover:border-violet-400 sm:text-[9px]"
+                    className="rounded-full border border-teal-300/70 bg-black/10 px-2.5 py-1 text-[9px] font-medium text-white transition-all duration-300 hover:border-violet-400 hover:text-teal-300"
                   >
                     {tech}
                   </span>
@@ -199,49 +279,56 @@ function ProjectCard({ project, index }) {
           </div>
 
           {/* BUTTONS */}
-          <div className="mt-3 flex flex-wrap gap-2 border-t border-white/10 pt-2.5">
 
-            {/* LIVE PROJECT */}
+          <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/40 pt-3">
             <motion.a
-              whileHover={{ scale: 1.04, y: -2 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-1 rounded-full bg-gradient-to-r ${project.color} px-3 py-1.5 text-[9px] font-bold text-white shadow-lg`}
+              className={`flex items-center gap-1.5 rounded-full bg-gradient-to-r ${project.color} px-4 py-2 text-[10px] font-bold text-white shadow-lg`}
             >
-              <Code2 size={12} />
+              <Code2 size={13} />
               Live Project
-              <ArrowUpRight size={11} />
+              <ArrowUpRight size={12} />
             </motion.a>
 
-            {/* GITHUB */}
             <motion.a
-              whileHover={{ scale: 1.04, y: -2 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 rounded-full border border-white/40 bg-black/50 px-3 py-1.5 text-[9px] font-bold text-white backdrop-blur-md transition hover:border-teal-400 hover:text-teal-300"
+              className="flex items-center gap-1.5 rounded-full border border-white/70 bg-transparent px-4 py-2 text-[10px] font-bold text-white transition-all duration-300 hover:border-teal-300 hover:text-teal-300"
             >
-              <Code2 size={12} />
+              <Code2 size={13} />
               GitHub
-              <ArrowUpRight size={11} />
+              <ArrowUpRight size={12} />
             </motion.a>
-
           </div>
+
+          {/* LEFT ACCENT LINE */}
+
+          <div
+            className={`absolute bottom-0 left-0 top-0 w-[3px] bg-gradient-to-b ${project.color}`}
+          />
         </div>
 
         {/* BOTTOM GLOW */}
+
         <div
-          className={`absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r ${project.color}`}
+          className={`absolute bottom-0 left-0 z-30 h-[2px] w-full bg-gradient-to-r ${project.color}`}
         />
       </div>
     </motion.div>
   );
 }
 
+// ======================================
 // MAIN PROJECT SECTION
+// ======================================
+
 export default function Projects() {
   return (
     <section
@@ -250,12 +337,11 @@ export default function Projects() {
     >
       <AnimatedBackground />
 
-      {/* Same container alignment as Home */}
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
         {/* SECTION HEADING */}
-        <div className="mb-7 text-center">
 
+        <div className="mb-7 text-center">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -285,10 +371,10 @@ export default function Projects() {
             transition={{ duration: 0.8, delay: 0.25 }}
             className="mx-auto mt-3 h-[3px] rounded-full bg-gradient-to-r from-teal-400 to-violet-400"
           />
-
         </div>
 
         {/* PROJECT CARDS GRID */}
+
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-5">
           {projects.map((project, index) => (
             <ProjectCard
@@ -298,7 +384,6 @@ export default function Projects() {
             />
           ))}
         </div>
-
       </div>
     </section>
   );
