@@ -245,21 +245,17 @@ export default function GitHubActivity() {
       id="github-activity"
       className="relative isolate overflow-hidden bg-[#050817] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
     >
-      {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -left-20 top-20 h-64 w-64 rounded-full bg-violet-600/15 blur-[110px]" />
         <div className="absolute -right-20 top-40 h-64 w-64 rounded-full bg-emerald-500/15 blur-[110px]" />
         <div className="absolute bottom-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[110px]" />
       </div>
 
-      {/* Floating orbs */}
       <div className="pointer-events-none absolute left-[8%] top-28 h-12 w-12 rounded-full bg-violet-500/80 shadow-[0_0_45px_12px_rgba(139,92,246,0.35)] blur-[1px]" />
       <div className="pointer-events-none absolute right-[9%] top-40 h-9 w-9 rounded-full bg-emerald-400/80 shadow-[0_0_45px_12px_rgba(52,211,153,0.35)] blur-[1px]" />
 
-      {/* Same Home container alignment */}
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -282,7 +278,6 @@ export default function GitHubActivity() {
           </div>
         </motion.div>
 
-        {/* Calendar card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -290,7 +285,6 @@ export default function GitHubActivity() {
           transition={{ duration: 0.8 }}
           className="rounded-2xl border border-cyan-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_45px_rgba(34,211,238,0.06)] backdrop-blur-xl sm:p-6 lg:p-8"
         >
-          {/* Calendar header */}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-base font-semibold text-slate-200 sm:text-xl">
               {loading
@@ -328,7 +322,6 @@ export default function GitHubActivity() {
             </div>
           ) : (
             <>
-              {/* Month labels and contribution grid */}
               <div className="overflow-x-auto pb-3">
                 <div className="min-w-[650px]">
                   <div
@@ -389,7 +382,6 @@ export default function GitHubActivity() {
                 </div>
               </div>
 
-              {/* Calendar footer */}
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                 <a
                   href="https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference"
@@ -415,7 +407,6 @@ export default function GitHubActivity() {
           )}
         </motion.div>
 
-        {/* Statistics */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -423,7 +414,6 @@ export default function GitHubActivity() {
           transition={{ duration: 0.8 }}
           className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-violet-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_40px_rgba(139,92,246,0.08)] backdrop-blur-xl md:grid-cols-4 md:gap-0 md:p-5"
         >
-          {/* Contributions */}
           <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
             <Code2 className="shrink-0 text-cyan-400" size={30} />
             <div className="min-w-0">
@@ -436,7 +426,6 @@ export default function GitHubActivity() {
             </div>
           </div>
 
-          {/* Longest streak */}
           <div className="flex items-center gap-3 px-2 py-3 md:border-r md:border-white/10 md:px-4">
             <Flame className="shrink-0 text-emerald-400" size={32} />
             <div className="min-w-0">
@@ -449,7 +438,6 @@ export default function GitHubActivity() {
             </div>
           </div>
 
-          {/* Current streak */}
           <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
             <CalendarDays className="shrink-0 text-violet-400" size={30} />
             <div className="min-w-0">
@@ -462,7 +450,6 @@ export default function GitHubActivity() {
             </div>
           </div>
 
-          {/* Profile */}
           <a
             href={`https://github.com/${USERNAME}`}
             target="_blank"
@@ -484,7 +471,6 @@ export default function GitHubActivity() {
           </a>
         </motion.div>
 
-        {/* Extra profile information */}
         {profile && (
           <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500">
             <span>

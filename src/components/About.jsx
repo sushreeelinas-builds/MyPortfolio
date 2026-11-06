@@ -17,12 +17,10 @@ export default function About() {
       id="about"
       className="about-section section relative isolate w-full overflow-hidden bg-[#050610] px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-20"
     >
-      {/* Animated background */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        {/* Moving grid */}
         <motion.div
           className="absolute inset-0 opacity-[0.12]"
           style={{
@@ -42,7 +40,6 @@ export default function About() {
           }}
         />
 
-        {/* Large blue glow orb */}
         <motion.div
           className="absolute -left-40 top-0 h-80 w-80 rounded-full bg-blue-600/25 blur-[110px] sm:h-[28rem] sm:w-[28rem]"
           animate={{
@@ -58,7 +55,6 @@ export default function About() {
           }}
         />
 
-        {/* Violet glow orb */}
         <motion.div
           className="absolute -right-40 top-[15%] h-96 w-96 rounded-full bg-violet-600/25 blur-[130px] sm:h-[34rem] sm:w-[34rem]"
           animate={{
@@ -74,7 +70,6 @@ export default function About() {
           }}
         />
 
-        {/* Cyan light near the center */}
         <motion.div
           className="absolute left-1/3 top-1/3 h-64 w-64 rounded-full bg-cyan-500/15 blur-[100px]"
           animate={{
@@ -89,7 +84,6 @@ export default function About() {
           }}
         />
 
-        {/* Deep indigo bottom glow */}
         <motion.div
           className="absolute -bottom-48 left-[25%] h-96 w-96 rounded-full bg-indigo-600/20 blur-[120px]"
           animate={{
@@ -103,7 +97,6 @@ export default function About() {
           }}
         />
 
-        {/* Floating light particles */}
         {particles.map((particle) => (
           <motion.span
             key={particle.id}
@@ -130,7 +123,6 @@ export default function About() {
           />
         ))}
 
-        {/* Slow horizontal light streaks */}
         {[0, 1, 2].map((item) => (
           <motion.div
             key={item}
@@ -149,13 +141,10 @@ export default function About() {
           />
         ))}
 
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#050610]/30 via-transparent to-[#050610]/70" />
       </div>
 
-      {/* Main aligned container */}
       <div className="relative z-10 mx-auto w-full max-w-7xl">
-        {/* Section heading */}
         <div className="relative z-10 mb-7 px-4 text-center">
           <motion.p
   initial={{ opacity: 0, y: 15 }}
@@ -186,9 +175,7 @@ export default function About() {
           />
         </div>
 
-        {/* About content */}
         <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-          {/* Profile animation */}
           <motion.div
             initial={{ opacity: 0, x: -45, scale: 0.95 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -199,7 +186,6 @@ export default function About() {
             <ProfileOrbit />
           </motion.div>
 
-          {/* About text */}
           <motion.div
             initial={{ opacity: 0, x: 45 }}
             whileInView={{ opacity: 1, x: 0 }}

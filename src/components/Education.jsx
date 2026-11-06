@@ -56,7 +56,6 @@ export default function Education() {
       id="education"
       className="relative isolate overflow-hidden bg-[#050505] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
     >
-      {/* Animated Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <motion.div
           animate={{
@@ -99,7 +98,6 @@ export default function Education() {
           className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-emerald-500/10 blur-[110px]"
         />
 
-        {/* Background Grid */}
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
@@ -110,10 +108,8 @@ export default function Education() {
         />
       </div>
 
-      {/* Same Home container alignment */}
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* Heading */}
         <div className="mb-10 text-center">
           <motion.p
   initial={{ opacity: 0, y: 15 }}
@@ -145,10 +141,8 @@ export default function Education() {
           />
         </div>
 
-        {/* Timeline */}
         <div className="relative mx-auto w-full max-w-4xl">
 
-          {/* Timeline Line */}
           <div className="absolute bottom-10 left-[21px] top-10 w-[2px] bg-gradient-to-b from-green-400 via-violet-500 to-transparent md:left-1/2 md:-translate-x-1/2" />
 
           <div className="space-y-10">
@@ -176,7 +170,6 @@ export default function Education() {
                     isLeft ? "md:flex-row" : "md:flex-row-reverse"
                   }`}
                 >
-                  {/* Timeline Icon */}
                   <motion.div
                     whileHover={{
                       scale: 1.2,
@@ -187,7 +180,6 @@ export default function Education() {
                     <Icon size={21} className="text-white" />
                   </motion.div>
 
-                  {/* Education Card */}
                   <div
                     className={`group w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-green-400/40 hover:bg-white/[0.07] hover:shadow-[0_0_35px_rgba(34,197,94,0.12)] md:w-[44%] ${
                       isLeft ? "md:mr-auto" : "md:ml-auto"
@@ -234,7 +226,6 @@ export default function Education() {
                       </span>
                     </div>
 
-                    {/* Card Glow */}
                     <div className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-gradient-to-br from-green-500/5 to-violet-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </div>
                 </motion.div>

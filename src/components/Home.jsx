@@ -25,13 +25,11 @@ export default function Home() {
       id="home"
       className="relative isolate min-h-screen w-full overflow-hidden bg-[#030304] px-6 pb-24 pt-28 text-white sm:px-10 lg:px-20"
     >
-      {/* Subtle background grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-20 opacity-[0.12] [background-image:linear-gradient(rgba(167,139,250,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(167,139,250,0.18)_1px,transparent_1px)] [background-size:55px_55px]"
       />
 
-      {/* Big neon violet ball */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -right-28 -top-32 -z-10 h-[420px] w-[420px] rounded-full bg-violet-600/25 blur-[100px] sm:h-[600px] sm:w-[600px]"
@@ -47,7 +45,6 @@ export default function Home() {
         transition={ballTransition(12)}
       />
 
-      {/* Big neon dark-green ball */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -bottom-36 -left-40 -z-10 h-[430px] w-[430px] rounded-full bg-green-700/25 blur-[110px] sm:h-[620px] sm:w-[620px]"
@@ -63,23 +60,19 @@ export default function Home() {
         transition={ballTransition(15, 1)}
       />
 
-      {/* Extra soft color glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-950/20 blur-[100px]"
       />
 
-      {/* Main content */}
       <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
 
-        {/* Left content */}
         <motion.div
           className="relative z-10 flex flex-col items-start"
           initial={reduceMotion ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Availability */}
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -98,7 +91,6 @@ export default function Home() {
             HELLO, I'M
           </p>
 
-          {/* Animated name */}
           <h1 className="flex flex-col items-start text-5xl font-black leading-[1.08] tracking-[-0.07em] sm:text-6xl md:text-7xl xl:text-[5.5rem]">
             <motion.span
               initial={
@@ -146,7 +138,6 @@ export default function Home() {
             </motion.span>
           </h1>
 
-          {/* Developer title */}
           <motion.h2
             initial={reduceMotion ? false : { opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,7 +172,6 @@ export default function Home() {
             </motion.span>
           </motion.h2>
 
-          {/* Buttons */}
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -206,7 +196,6 @@ export default function Home() {
               Get In Touch
             </motion.a>
 
-            {/* Resume Button */}
             <motion.a
   href="/Sushree_Elina_Sahoo(Resume).pdf"
   target="_blank"
@@ -219,7 +208,6 @@ export default function Home() {
 </motion.a>
           </motion.div>
 
-          {/* Social links */}
           <motion.div
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -254,7 +242,6 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Right side developer terminal */}
         <motion.div
           className="relative mx-auto flex min-h-[360px] w-full max-w-xl items-center justify-center lg:ml-auto sm:min-h-[430px]"
           initial={
@@ -263,7 +250,6 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.3 }}
         >
-          {/* Terminal backdrop glows */}
           <motion.div
             className="absolute h-64 w-64 rounded-full bg-violet-600/20 blur-[90px] sm:h-80 sm:w-80"
             animate={reduceMotion ? {} : { scale: [1, 1.2, 1] }}
@@ -276,7 +262,6 @@ export default function Home() {
             transition={ballTransition(8, 1)}
           />
 
-          {/* Glass terminal */}
           <motion.div
             animate={reduceMotion ? {} : { y: [0, -10, 0] }}
             transition={ballTransition(6)}
@@ -332,7 +317,6 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Floating glass labels */}
           <motion.div
             animate={reduceMotion ? {} : { y: [0, -8, 0] }}
             transition={ballTransition(5)}
@@ -353,7 +337,6 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* Scroll cue */}
       <motion.a
         href="#about"
         initial={reduceMotion ? false : { opacity: 0 }}

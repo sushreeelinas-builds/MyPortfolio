@@ -20,7 +20,6 @@ const skills = [
   { name: "Python", icon: FaPython },
   { name: "Node.js", icon: FaNodeJs },
   { name: "MongoDB", icon: SiMongodb },
-  { name: "Java", icon: FaJava },
   { name: "React", icon: SiReact },
   { name: "Tailwind CSS", icon: SiTailwindcss },
   { name: "JavaScript", icon: SiJavascript },
@@ -83,7 +82,6 @@ export default function Skills() {
       id="skills"
       className="relative isolate w-full overflow-hidden bg-[#030708] py-15 text-white sm:py-19"
     >
-      {/* Animated background grid */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 opacity-30"
@@ -100,7 +98,6 @@ export default function Skills() {
         }}
       />
 
-      {/* Floating teal glow */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -left-32 top-0 -z-10 h-72 w-72 rounded-full bg-teal-500/20 blur-[100px] sm:h-96 sm:w-96"
@@ -116,7 +113,6 @@ export default function Skills() {
         }}
       />
 
-      {/* Floating violet glow */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -right-32 top-10 -z-10 h-72 w-72 rounded-full bg-violet-500/15 blur-[110px] sm:h-96 sm:w-96"
@@ -132,7 +128,6 @@ export default function Skills() {
         }}
       />
 
-      {/* Moving lime glow near the bottom */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute bottom-0 left-1/3 -z-10 h-64 w-64 rounded-full bg-lime-400/10 blur-[100px]"
@@ -147,7 +142,6 @@ export default function Skills() {
         }}
       />
 
-      {/* Floating particles */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -179,7 +173,6 @@ export default function Skills() {
         ))}
       </div>
 
-      {/* Heading */}
       <div className="relative z-10 mb-10 px-4 text-center">
         <motion.p
           initial={{ opacity: 0, y: 15 }}
@@ -210,7 +203,6 @@ export default function Skills() {
 
       </div>
 
-      {/* Animated glass panel */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -221,7 +213,6 @@ export default function Skills() {
         <SkillRow />
       </motion.div>
 
-      {/* Bottom decorative line */}
       <motion.div
         className="mx-auto mt-10 h-px w-3/4 bg-gradient-to-r from-transparent via-teal-400/50 to-transparent"
         animate={{ opacity: [0.25, 0.8, 0.25] }}

@@ -40,10 +40,8 @@ const items = [
 function ExperienceBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Black, green and violet base */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#020807] via-[#090713] to-[#05030b]" />
 
-      {/* Green glowing orb */}
       <motion.div
         animate={{
           x: [0, 55, -25, 0],
@@ -58,7 +56,6 @@ function ExperienceBackground() {
         className="absolute -left-40 top-10 h-[450px] w-[450px] rounded-full bg-emerald-500/20 blur-[140px]"
       />
 
-      {/* Violet glowing orb */}
       <motion.div
         animate={{
           x: [0, -45, 30, 0],
@@ -73,7 +70,6 @@ function ExperienceBackground() {
         className="absolute -right-40 top-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-[150px]"
       />
 
-      {/* Bottom green-violet glow */}
       <motion.div
         animate={{
           x: [0, 35, -30, 0],
@@ -87,7 +83,6 @@ function ExperienceBackground() {
         className="absolute -bottom-52 left-1/3 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[140px]"
       />
 
-      {/* Subtle grid */}
       <motion.div
         animate={{
           backgroundPosition: ["0px 0px", "48px 48px"],
@@ -104,8 +99,6 @@ function ExperienceBackground() {
           backgroundSize: "48px 48px",
         }}
       />
-
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020504]/70" />
     </div>
   );
@@ -119,10 +112,8 @@ export default function Achievements() {
     >
       <ExperienceBackground />
 
-      {/* Same Home container alignment */}
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -151,7 +142,6 @@ export default function Achievements() {
           />
         </motion.div>
 
-        {/* Achievement cards */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item, index) => {
             const Icon = item.icon;
@@ -174,7 +164,6 @@ export default function Achievements() {
                 }}
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b100f]/70 p-6 shadow-xl backdrop-blur-xl transition-all duration-500 hover:border-emerald-400/30 hover:bg-[#101714]/90 hover:shadow-2xl ${item.glow}`}
               >
-                {/* Animated card glow */}
                 <motion.div
                   animate={{ opacity: [0.15, 0.35, 0.15] }}
                   transition={{
@@ -188,7 +177,6 @@ export default function Achievements() {
                 <div className="absolute -bottom-20 -left-16 h-40 w-40 rounded-full bg-emerald-500/10 blur-3xl transition-all duration-500 group-hover:bg-emerald-400/20" />
 
                 <div className="relative z-10">
-                  {/* Icon and label */}
                   <div className="mb-7 flex items-center justify-between gap-3">
                     <motion.div
                       whileHover={{ rotate: 12, scale: 1.12 }}
@@ -203,7 +191,6 @@ export default function Achievements() {
                     </span>
                   </div>
 
-                  {/* Card content */}
                   <h3 className="text-lg font-semibold leading-snug text-white transition-colors duration-300 group-hover:text-emerald-200">
                     {item.title}
                   </h3>
@@ -217,7 +204,6 @@ export default function Achievements() {
                   </p>
                 </div>
 
-                {/* Bottom accent line */}
                 <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-emerald-400 via-violet-500 to-purple-500 transition-all duration-700 group-hover:w-full" />
               </motion.article>
             );

@@ -34,9 +34,7 @@ export default function Contact() {
         id="contact"
         className="relative isolate overflow-hidden bg-[#020b13] px-6 py-12 sm:px-10 sm:py-16 lg:px-20"
       >
-        {/* Animated Background */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          {/* Neon Grid */}
           <motion.div
             className="absolute inset-0 opacity-[0.10]"
             style={{
@@ -56,7 +54,6 @@ export default function Contact() {
             }}
           />
 
-          {/* Green Glow */}
           <motion.div
             className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-emerald-500/20 blur-[130px]"
             animate={{
@@ -71,7 +68,6 @@ export default function Contact() {
             }}
           />
 
-          {/* Violet Glow */}
           <motion.div
             className="absolute -right-40 top-10 h-[30rem] w-[30rem] rounded-full bg-violet-600/20 blur-[140px]"
             animate={{
@@ -86,7 +82,6 @@ export default function Contact() {
             }}
           />
 
-          {/* Blue Glow */}
           <motion.div
             className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-blue-600/15 blur-[120px]"
             animate={{
@@ -103,10 +98,8 @@ export default function Contact() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#020b13]/20 via-transparent to-[#020b13]/70" />
         </div>
 
-        {/* Same Home container alignment */}
         <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-          {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -130,10 +123,8 @@ export default function Contact() {
             </h2>
           </motion.div>
 
-          {/* Contact Layout */}
           <div className="grid w-full gap-5 lg:grid-cols-[0.8fr_1.7fr]">
 
-            {/* Left Contact Information */}
             <motion.div
               initial={{ opacity: 0, x: -35 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -141,7 +132,6 @@ export default function Contact() {
               transition={{ duration: 0.7 }}
               className="rounded-2xl border border-emerald-400/10 bg-[#0b1e2c]/85 p-5 shadow-[0_0_45px_rgba(16,185,129,0.06)] backdrop-blur-xl sm:p-7"
             >
-              {/* Email */}
               <div className="mb-6">
                 <h3 className="mb-3 border-l-2 border-emerald-400 pl-4 text-lg font-semibold text-white">
                   Email
@@ -155,7 +145,6 @@ export default function Contact() {
                 </a>
               </div>
 
-              {/* Contact */}
               <div className="mb-6">
                 <h3 className="mb-3 border-l-2 border-violet-400 pl-4 text-lg font-semibold text-white">
                   Contact
@@ -166,7 +155,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Social Links */}
               <div>
                 <h3 className="mb-4 border-l-2 border-emerald-400 pl-4 text-lg font-semibold text-white">
                   Connect With Me
@@ -204,7 +192,6 @@ export default function Contact() {
               </div>
             </motion.div>
 
-            {/* Right Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: 35 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -217,7 +204,6 @@ export default function Contact() {
               </h3>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name and Email */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <input
                     type="text"
@@ -236,7 +222,6 @@ export default function Contact() {
                   />
                 </div>
 
-                {/* Subject */}
                 <input
                   type="text"
                   name="subject"
@@ -245,7 +230,6 @@ export default function Contact() {
                   className="w-full rounded-lg border border-white/15 bg-[#0a2030]/80 px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-gray-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/10"
                 />
 
-                {/* Message */}
                 <textarea
                   name="message"
                   rows="4"
@@ -254,7 +238,6 @@ export default function Contact() {
                   className="w-full resize-y rounded-lg border border-white/15 bg-[#0a2030]/80 px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-gray-500 focus:border-violet-400 focus:ring-2 focus:ring-violet-400/10"
                 />
 
-                {/* Submit Button */}
                 <motion.button
                   type="submit"
                   whileHover={{
@@ -273,7 +256,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 bg-[#02080e] px-6 py-6 sm:px-10 lg:px-20">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
           <a

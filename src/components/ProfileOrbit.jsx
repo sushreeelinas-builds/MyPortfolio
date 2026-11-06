@@ -26,7 +26,6 @@ export default function ProfileOrbit() {
   return (
     <div className="relative mx-auto flex aspect-square w-full max-w-[600px] items-center justify-center">
 
-      {/* Outer orbit */}
       <motion.div
         animate={{ rotate: 360 }}
         transition={{
@@ -37,7 +36,6 @@ export default function ProfileOrbit() {
         className="absolute h-[80%] w-[80%] rounded-full border border-white/[0.08]"
       />
 
-      {/* Inner orbit */}
       <motion.div
         animate={{ rotate: -360 }}
         transition={{
@@ -48,10 +46,8 @@ export default function ProfileOrbit() {
         className="absolute h-[60%] w-[60%] rounded-full border border-cyan-400/[0.10]"
       />
 
-      {/* Center glow */}
       <div className="absolute h-[52%] w-[52%] rounded-full bg-cyan-400/10 blur-3xl" />
 
-      {/* Profile picture */}
       <motion.div
         initial={{ opacity: 0, scale: 0.65 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -71,7 +67,6 @@ export default function ProfileOrbit() {
         />
       </motion.div>
 
-      {/* Orbiting technology icons */}
       {technologies.map(({ Icon, color, label }, index) => {
         const angle = (index / technologies.length) * Math.PI * 2;
         const radius = 43;
