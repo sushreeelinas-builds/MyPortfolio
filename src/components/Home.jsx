@@ -73,19 +73,8 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-3 rounded-full border border-green-400/20 bg-green-950/40 px-4 py-3 text-[9px] font-bold tracking-[1.5px] text-green-200 backdrop-blur-xl sm:text-[10px]"
-          >
-            <motion.span
-              className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_#4ade80]"
-              animate={reduceMotion ? {} : { opacity: [1, 0.4, 1] }}
-              transition={ballTransition(2)}
-            />
-            OPEN TO INTERNSHIPS & OPPORTUNITIES
-          </motion.div>
+          
+           
 
           <p className="mb-3 mt-9 text-xs font-bold tracking-[5px] text-violet-300">
             HELLO, I'M
