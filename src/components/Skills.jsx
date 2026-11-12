@@ -1,4 +1,7 @@
+
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+
 import {
   FaPython,
   FaNodeJs,
@@ -76,111 +79,130 @@ function SkillRow() {
   );
 }
 
+// ======================================
+// ANIMATED SKILLS BACKGROUND
+// ======================================
+
+function SkillsBackground() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
+      {/* Main Dark Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#020807] via-[#090713] to-[#05030b]" />
+
+      {/* Emerald Green Glow */}
+      <motion.div
+        animate={{
+          x: [0, 55, -25, 0],
+          y: [0, -35, 30, 0],
+          scale: [1, 1.15, 0.95, 1],
+        }}
+        transition={{
+          duration: 17,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -left-40 top-10 h-[450px] w-[450px] rounded-full bg-emerald-500/20 blur-[140px]"
+      />
+
+      {/* Violet Glow */}
+      <motion.div
+        animate={{
+          x: [0, -45, 30, 0],
+          y: [0, 35, -25, 0],
+          scale: [1, 0.9, 1.15, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -right-40 top-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-[150px]"
+      />
+
+      {/* Bottom Green Glow */}
+      <motion.div
+        animate={{
+          x: [0, 35, -30, 0],
+          y: [0, -25, 20, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -bottom-52 left-1/3 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[140px]"
+      />
+
+      {/* Moving Emerald-Violet Grid */}
+      <motion.div
+        animate={{
+          backgroundPosition: ["0px 0px", "48px 48px"],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(139,92,246,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.2) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      {/* Bottom Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020504]/70" />
+    </div>
+  );
+}
+
 export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative isolate w-full overflow-hidden bg-[#030708] py-15 text-white sm:py-19"
+      className="relative isolate w-full overflow-hidden bg-[#020504] py-15 text-white sm:py-29"
     >
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 opacity-30"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(45,212,191,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.08) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-        animate={{ backgroundPosition: ["0px 0px", "48px 48px"] }}
-        transition={{
-          duration: 18,
-          ease: "linear",
-          repeat: Infinity,
-        }}
-      />
 
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-32 top-0 -z-10 h-72 w-72 rounded-full bg-teal-500/20 blur-[100px] sm:h-96 sm:w-96"
-        animate={{
-          x: [0, 100, 35, 0],
-          y: [0, 70, 130, 0],
-          scale: [1, 1.2, 0.9, 1],
-        }}
-        transition={{
-          duration: 16,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+      {/* Background */}
+      <SkillsBackground />
 
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-32 top-10 -z-10 h-72 w-72 rounded-full bg-violet-500/15 blur-[110px] sm:h-96 sm:w-96"
-        animate={{
-          x: [0, -90, -35, 0],
-          y: [0, 100, 40, 0],
-          scale: [1, 0.85, 1.2, 1],
-        }}
-        transition={{
-          duration: 19,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+      {/* Heading */}
+      <div className="relative z-10 mb-20 px-4 text-center mt-10">
 
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/3 -z-10 h-64 w-64 rounded-full bg-lime-400/10 blur-[100px]"
-        animate={{
-          x: [-80, 100, -80],
-          y: [20, -70, 20],
-        }}
-        transition={{
-          duration: 14,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="relative mb-8 text-center"
+        >
+          <span className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-6xl font-black tracking-[12px] text-white/[0.025] sm:text-8xl lg:text-9xl">
+            SKILL
+          </span>
 
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        {particles.map((particle) => (
-          <motion.span
-            key={particle.id}
-            className="absolute rounded-full bg-teal-300"
-            style={{
-              left: particle.left,
-              top: particle.top,
-              width: particle.size,
-              height: particle.size,
-              boxShadow: "0 0 12px rgba(45,212,191,0.8)",
-            }}
-            animate={{
-              y: [0, -35, 10, 0],
-              x: [0, 15, -12, 0],
-              opacity: [0.15, 0.8, 0.25, 0.15],
-              scale: [0.8, 1.4, 0.9, 0.8],
-            }}
-            transition={{
-              duration: particle.duration,
-              delay: particle.delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
+            <Sparkles size={14} />
+            TECH STACK
+          </div>
 
-      <div className="relative z-10 mb-10 px-4 text-center">
+          <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
+            <span className="text-emerald-400">—</span>{" "}
+            MY SKILLS{" "}
+            <span className="text-violet-400">—</span>
+          </h2>
+        </motion.div>
+
+        {/* Old heading design preserved */}
+        {/* 
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-3 mt-10 text-xs font-semibold uppercase tracking-[0.35em] text-teal-400"
         >
-           TECH STACK
+          TECH STACK
         </motion.p>
 
         <motion.h2
@@ -200,9 +222,11 @@ export default function Skills() {
           transition={{ duration: 0.8, delay: 0.25 }}
           className="mx-auto mt-5 h-1 rounded-full bg-gradient-to-r from-teal-400 to-violet-400"
         />
+        */}
 
       </div>
 
+      {/* Scrolling Skills */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -213,11 +237,17 @@ export default function Skills() {
         <SkillRow />
       </motion.div>
 
+      {/* Bottom Animated Line */}
       <motion.div
         className="mx-auto mt-10 h-px w-3/4 bg-gradient-to-r from-transparent via-teal-400/50 to-transparent"
         animate={{ opacity: [0.25, 0.8, 0.25] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
+
     </section>
   );
 }

@@ -1,5 +1,7 @@
 
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+
 import {
   ArrowUpRight,
   BrainCircuit,
@@ -114,7 +116,30 @@ export default function Achievements() {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        <motion.div
+         <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="relative mb-8 text-center"
+          >
+            <span className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-6xl font-black tracking-[12px] text-white/[0.025] sm:text-8xl lg:text-9xl">
+              ACHIEVEMENT
+            </span>
+
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
+              <Sparkles size={14} />
+               MY JOURNEY
+            </div>
+
+            <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
+              <span className="text-emerald-400">—</span>{" "}
+             Experience & Achievements{" "}
+              <span className="text-violet-400">—</span>
+            </h2>
+          </motion.div>
+
+        {/* <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -140,7 +165,7 @@ export default function Achievements() {
             transition={{ duration: 0.8, delay: 0.25 }}
             className="mx-auto mt-5 h-1 rounded-full bg-gradient-to-r from-green-400 via-emerald-300 to-violet-500"
           />
-        </motion.div>
+        </motion.div> */}
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item, index) => {

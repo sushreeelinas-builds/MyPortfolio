@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 import ProfileOrbit from "./ProfileOrbit";
 
 const particles = Array.from({ length: 28 }, (_, i) => ({
@@ -15,98 +16,74 @@ export default function About() {
   return (
     <section
       id="about"
-      className="about-section section relative isolate w-full overflow-hidden bg-[#050610] px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-20"
+      className="about-section section relative isolate w-full overflow-hidden bg-[#020504] px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-20"
     >
+      {/* ======================================
+          ANIMATED BACKGROUND
+      ====================================== */}
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        <motion.div
-          className="absolute inset-0 opacity-[0.12]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(31, 34, 76, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(49, 36, 81, 0.5) 1px, transparent 1px)",
-            backgroundSize: "55px 55px",
-            maskImage:
-              "radial-gradient(ellipse at center, black 10%, transparent 80%)",
-          }}
-          animate={{
-            backgroundPosition: ["0px 0px", "55px 55px"],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
+        {/* Main Dark Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#020807] via-[#090713] to-[#05030b]" />
 
+        {/* Emerald Green Glow */}
         <motion.div
-          className="absolute -left-40 top-0 h-80 w-80 rounded-full bg-blue-600/25 blur-[110px] sm:h-[28rem] sm:w-[28rem]"
+          className="absolute -left-40 top-10 h-[450px] w-[450px] rounded-full bg-emerald-500/20 blur-[140px] sm:h-[28rem] sm:w-[28rem]"
           animate={{
-            x: [0, 100, 35, 0],
-            y: [0, -45, 70, 0],
-            scale: [1, 1.2, 0.9, 1],
-            opacity: [0.5, 0.9, 0.55, 0.5],
+            x: [0, 55, -25, 0],
+            y: [0, -35, 30, 0],
+            scale: [1, 1.15, 0.95, 1],
           }}
           transition={{
-            duration: 18,
+            duration: 17,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
 
+        {/* Violet Glow */}
         <motion.div
-          className="absolute -right-40 top-[15%] h-96 w-96 rounded-full bg-violet-600/25 blur-[130px] sm:h-[34rem] sm:w-[34rem]"
+          className="absolute -right-40 top-[15%] h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-[150px] sm:h-[34rem] sm:w-[34rem]"
           animate={{
-            x: [0, -90, -30, 0],
-            y: [0, 80, -45, 0],
-            scale: [1, 0.85, 1.15, 1],
-            opacity: [0.45, 0.85, 0.55, 0.45],
+            x: [0, -45, 30, 0],
+            y: [0, 35, -25, 0],
+            scale: [1, 0.9, 1.15, 1],
           }}
           transition={{
-            duration: 22,
+            duration: 20,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
 
+        {/* Bottom Green Glow */}
         <motion.div
-          className="absolute left-1/3 top-1/3 h-64 w-64 rounded-full bg-cyan-500/15 blur-[100px]"
+          className="absolute -bottom-52 left-1/3 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[140px]"
           animate={{
-            x: [-50, 80, -20, -50],
-            y: [20, -70, 60, 20],
-            scale: [0.9, 1.2, 0.8, 0.9],
+            x: [0, 35, -30, 0],
+            y: [0, -25, 20, 0],
           }}
           transition={{
-            duration: 16,
+            duration: 15,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
 
-        <motion.div
-          className="absolute -bottom-48 left-[25%] h-96 w-96 rounded-full bg-indigo-600/20 blur-[120px]"
-          animate={{
-            x: [0, 100, -40, 0],
-            opacity: [0.25, 0.65, 0.3, 0.25],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
+        {/* Floating Particles */}
         {particles.map((particle) => (
           <motion.span
             key={particle.id}
-            className="absolute rounded-full bg-blue-300"
+            className="absolute rounded-full bg-emerald-300"
             style={{
               left: particle.left,
               top: particle.top,
               width: particle.size,
               height: particle.size,
-              boxShadow: "0 0 10px rgba(129,140,248,0.9)",
+              boxShadow: "0 0 12px rgba(52,211,153,0.8)",
             }}
             animate={{
               y: [0, -35, 15, 0],
@@ -123,6 +100,7 @@ export default function About() {
           />
         ))}
 
+        {/* Moving Light Streaks */}
         {[0, 1, 2].map((item) => (
           <motion.div
             key={item}
@@ -141,41 +119,45 @@ export default function About() {
           />
         ))}
 
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050610]/30 via-transparent to-[#050610]/70" />
+        {/* Bottom Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020504]/70" />
       </div>
 
+      {/* ======================================
+          ABOUT CONTENT
+      ====================================== */}
+
       <div className="relative z-10 mx-auto w-full max-w-7xl">
+
+        {/* Heading */}
         <div className="relative z-10 mb-7 px-4 text-center">
-          <motion.p
-  initial={{ opacity: 0, y: 15 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.6 }}
-  className="mb-1 mt-2 bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-xs font-semibold uppercase tracking-[0.35em] text-transparent"
->
-  GET TO KNOW ME
-</motion.p>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 25, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="bg-gradient-to-r from-teal-300 via-cyan-200 to-violet-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl"
-          >
-            About Me
-          </motion.h2>
-
           <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            whileInView={{ width: 100, opacity: 1 }}
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="mx-auto mt-2 h-1 rounded-full bg-gradient-to-r from-teal-400 to-violet-400"
-          />
+            transition={{ duration: 0.7 }}
+            className="relative mb-8 text-center"
+          >
+            <span className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-6xl font-black tracking-[12px] text-white/[0.025] sm:text-8xl lg:text-9xl">
+              ABOUT
+            </span>
+
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
+              <Sparkles size={14} />
+              GET TO KNOW ME
+            </div>
+
+            <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
+              <span className="text-emerald-400">—</span>{" "}
+              ABOUT ME{" "}
+              <span className="text-violet-400">—</span>
+            </h2>
+          </motion.div>
         </div>
 
+        {/* Profile and About Details */}
         <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+
           <motion.div
             initial={{ opacity: 0, x: -45, scale: 0.95 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -235,6 +217,7 @@ export default function About() {
               Explore My Work ↗
             </motion.a>
           </motion.div>
+
         </div>
       </div>
     </section>
