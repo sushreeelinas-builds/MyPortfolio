@@ -1,64 +1,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Code2,
-  Flame,
-  CalendarDays,
-  ExternalLink,
-  RefreshCw,
-  Heart,
-} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ExternalLink, RefreshCw, Github } from "lucide-react";
 
 const USERNAME = "sushreeelinas-builds";
 
 const CONTRIBUTION_API = `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`;
 const GITHUB_API = `https://api.github.com/users/${USERNAME}`;
 
-const getStreaks = (contributions) => {
-  const activeDates = new Set(
-    contributions
-      .filter((day) => day.count > 0)
-      .map((day) => day.date)
-  );
-
-  let longest = 0;
-  let current = 0;
-  let running = 0;
-
-  contributions.forEach((day) => {
-    if (day.count > 0) {
-      running++;
-      longest = Math.max(longest, running);
-    } else {
-      running = 0;
-    }
-  });
-
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-
-  let checkDate = activeDates.has(formatDate(today))
-    ? today
-    : yesterday;
-
-  while (activeDates.has(formatDate(checkDate))) {
-    current++;
-    checkDate = new Date(checkDate);
-    checkDate.setDate(checkDate.getDate() - 1);
-  }
-
-  return { longest, current };
-};
+const STREAK_IMAGE = `https://streak-stats.demolab.com/?user=${USERNAME}&theme=dark&hide_border=true&background=030107&ring=4ade80&fire=a78bfa&currStreakLabel=4ade80&sideNums=a78bfa&sideLabels=4ade80&dates=FFFFFF&border_radius=10`;
 
 const getContributionLevel = (count, maxCount) => {
   if (count === 0) return 0;
@@ -123,11 +73,22 @@ const getCalendarWeeks = (contributions) => {
 };
 
 export default function GitHubActivity() {
+  const reduceMotion = useReducedMotion();
+
   const [contributions, setContributions] = useState([]);
-  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Neon background animation
+  const ballTransition = (duration, delay = 0) => ({
+    duration: reduceMotion ? 0 : duration,
+    delay,
+    repeat: reduceMotion ? 0 : Infinity,
+    repeatType: "reverse",
+    ease: "easeInOut",
+  });
+
+  // Fetch GitHub activity
   const fetchGitHubData = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -140,18 +101,18 @@ export default function GitHubActivity() {
         ]);
 
       if (!contributionResponse.ok) {
-        throw new Error("Unable to load GitHub contributions.");
+        throw new Error("Unable to load contributions.");
       }
 
       if (!profileResponse.ok) {
-        throw new Error("Unable to load GitHub profile.");
+        throw new Error("Unable to load profile.");
       }
 
       const contributionData = await contributionResponse.json();
-      const profileData = await profileResponse.json();
+
+      await profileResponse.json();
 
       setContributions(contributionData.contributions || []);
-      setProfile(profileData);
     } catch (err) {
       setError(
         "GitHub activity is temporarily unavailable. Please try again."
@@ -165,55 +126,56 @@ export default function GitHubActivity() {
     fetchGitHubData();
   }, [fetchGitHubData]);
 
+  // Total contributions
   const totalContributions = useMemo(
     () => contributions.reduce((sum, day) => sum + day.count, 0),
     [contributions]
   );
 
+  // Maximum contributions
   const maxContribution = useMemo(
     () => Math.max(0, ...contributions.map((day) => day.count)),
     [contributions]
   );
 
-  const streaks = useMemo(
-    () => getStreaks(contributions),
-    [contributions]
-  );
-
+  // Calendar weeks
   const weeks = useMemo(
     () => getCalendarWeeks(contributions),
     [contributions]
   );
 
+  // Month labels
   const monthLabels = useMemo(() => {
     const labels = [];
-    let previousMonth = -1;
 
     weeks.forEach((week, index) => {
       const firstDay = week.find((day) => {
-        const date = new Date(`${day.date}T00:00:00`);
-        return date.getDate() === 1;
+        return new Date(`${day.date}T00:00:00`).getDate() === 1;
       });
 
       if (firstDay) {
         const date = new Date(`${firstDay.date}T00:00:00`);
-        const month = date.getMonth();
 
-        if (month !== previousMonth) {
-          labels.push({
-            index,
-            label: date.toLocaleString("en-US", {
-              month: "short",
-            }),
-          });
-
-          previousMonth = month;
-        }
+        labels.push({
+          index,
+          label: date.toLocaleString("en-US", {
+            month: "short",
+          }),
+        });
       }
     });
 
     return labels;
   }, [weeks]);
+
+  // Neon green contribution colors
+  const levelColors = [
+    "bg-[#171322]",
+    "bg-[#123b2b]",
+    "bg-[#087a43]",
+    "bg-[#22c55e]",
+    "bg-[#86efac]",
+  ];
 
   const getLevel = (day) => {
     if (day.count === 0) return 0;
@@ -225,14 +187,6 @@ export default function GitHubActivity() {
     return getContributionLevel(day.count, maxContribution);
   };
 
-  const levelColors = [
-    "bg-[#18243a]",
-    "bg-[#075c46]",
-    "bg-[#07976a]",
-    "bg-[#18d58a]",
-    "bg-[#65ff9b]",
-  ];
-
   const formattedDate = (date) =>
     new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
       month: "short",
@@ -243,89 +197,351 @@ export default function GitHubActivity() {
   return (
     <section
       id="github-activity"
-      className="relative isolate overflow-hidden bg-[#050817] px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-20"
+      className="
+        relative isolate w-full overflow-hidden
+        bg-[#030107]
+        px-6 py-10 text-white
+        sm:px-10 sm:py-12
+        lg:px-20
+      "
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-20 top-20 h-64 w-64 rounded-full bg-violet-600/15 blur-[110px]" />
-        <div className="absolute -right-20 top-40 h-64 w-64 rounded-full bg-emerald-500/15 blur-[110px]" />
-        <div className="absolute bottom-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[110px]" />
-      </div>
+      {/* DEEP BLACK AND VIOLET BASE */}
 
-      <div className="pointer-events-none absolute left-[8%] top-28 h-12 w-12 rounded-full bg-violet-500/80 shadow-[0_0_45px_12px_rgba(139,92,246,0.35)] blur-[1px]" />
-      <div className="pointer-events-none absolute right-[9%] top-40 h-9 w-9 rounded-full bg-emerald-400/80 shadow-[0_0_45px_12px_rgba(52,211,153,0.35)] blur-[1px]" />
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute inset-0 -z-30
+          bg-gradient-to-br
+          from-[#030107]
+          via-[#090516]
+          to-[#020906]
+        "
+      />
+
+      {/* NEON GRID */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                backgroundPosition: [
+                  "0px 0px",
+                  "50px 50px",
+                ],
+              }
+        }
+        transition={{
+          duration: 15,
+          repeat: reduceMotion ? 0 : Infinity,
+          ease: "linear",
+        }}
+        className="
+          pointer-events-none absolute inset-0 -z-20
+          opacity-[0.16]
+        "
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(74,222,128,0.22) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(167,139,250,0.22) 1px, transparent 1px)
+          `,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      {/* VIOLET NEON ORB */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                x: [0, 80, -35, 0],
+                y: [0, 45, -25, 0],
+                scale: [1, 1.2, 0.9, 1],
+                opacity: [0.35, 0.6, 0.4, 0.35],
+              }
+        }
+        transition={ballTransition(17)}
+        className="
+          pointer-events-none absolute
+          -left-40 -top-20 -z-10
+          h-[420px] w-[420px]
+          rounded-full bg-violet-700/30
+          blur-[130px]
+        "
+      />
+
+      {/* GREEN NEON ORB */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                x: [0, -70, 35, 0],
+                y: [0, 55, -30, 0],
+                scale: [1, 1.15, 0.9, 1],
+                opacity: [0.3, 0.55, 0.35, 0.3],
+              }
+        }
+        transition={ballTransition(19, 1)}
+        className="
+          pointer-events-none absolute
+          -right-40 top-0 -z-10
+          h-[450px] w-[450px]
+          rounded-full bg-green-500/25
+          blur-[140px]
+        "
+      />
+
+      {/* BOTTOM VIOLET GLOW */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                x: [0, 45, -30, 0],
+                y: [0, -35, 25, 0],
+                scale: [1, 1.15, 0.95, 1],
+              }
+        }
+        transition={ballTransition(16, 2)}
+        className="
+          pointer-events-none absolute
+          bottom-[-180px] left-[30%] -z-10
+          h-[400px] w-[400px]
+          rounded-full bg-violet-600/20
+          blur-[130px]
+        "
+      />
+
+      {/* CENTER NEON GLOW */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute
+          left-1/2 top-1/2 -z-10
+          h-[300px] w-[300px]
+          -translate-x-1/2 -translate-y-1/2
+          rounded-full bg-green-500/[0.07]
+          blur-[120px]
+        "
+      />
+
+      {/* FLOATING VIOLET PARTICLE */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                y: [0, -22, 0],
+                x: [0, 12, 0],
+                scale: [1, 1.2, 1],
+              }
+        }
+        transition={ballTransition(6)}
+        className="
+          pointer-events-none absolute
+          left-[8%] top-20
+          h-8 w-8 rounded-full
+          bg-violet-400/80
+          shadow-[0_0_25px_8px_rgba(167,139,250,0.45)]
+          blur-[1px]
+        "
+      />
+
+      {/* FLOATING GREEN PARTICLE */}
+
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reduceMotion
+            ? {}
+            : {
+                y: [0, 20, 0],
+                x: [0, -12, 0],
+                scale: [1, 1.25, 1],
+              }
+        }
+        transition={ballTransition(7, 1)}
+        className="
+          pointer-events-none absolute
+          right-[9%] top-28
+          h-7 w-7 rounded-full
+          bg-green-400/90
+          shadow-[0_0_30px_8px_rgba(74,222,128,0.45)]
+          blur-[1px]
+        "
+      />
+
+      {/* MAIN CONTAINER - PROJECTS ALIGNMENT */}
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
+        {/* SECTION HEADING */}
+
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left"
+          className="relative mb-20 text-center"
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.2)]">
-            <Code2 size={30} />
-          </div>
+          <span
+            className="
+              absolute left-1/2 top-1/2 -z-10
+              -translate-x-1/2 -translate-y-1/2
+              whitespace-nowrap
+              text-6xl font-black tracking-[12px]
+              text-white/[0.035]
+              sm:text-8xl lg:text-9xl 
+            "
+          >
+            GITHUB
+          </span>
 
-          <div className="hidden h-14 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent sm:block" />
+          <h2 className="
+            text-2xl font-bold tracking-[2px]
+            text-white sm:text-4xl  lg:text-5xl
+          ">
+            <span className="text-green-400 drop-shadow-[0_0_12px_rgba(74,222,128,0.8)]">
+              —
+            </span>{" "}
+            GITHUB ACTIVITY{" "}
+            <span className="text-violet-400  drop-shadow-[0_0_12px_rgba(167,139,250,0.8)]">
+              —
+            </span>
+          </h2>
 
-          <div>
-            <h2 className="bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
-              GitHub Activity
-            </h2>
-
-            
-          </div>
+          
         </motion.div>
 
+        {/* CONTRIBUTION CALENDAR */}
+
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="rounded-2xl border border-cyan-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_45px_rgba(34,211,238,0.06)] backdrop-blur-xl sm:p-6 lg:p-8"
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7 }}
+          className="
+            group relative overflow-hidden rounded-xl
+            border border-violet-500/25
+            bg-[#080510]/85
+            p-3 sm:p-5
+            shadow-[0_0_25px_rgba(139,92,246,0.08),0_20px_70px_rgba(0,0,0,0.5)]
+            backdrop-blur-2xl
+            transition-all duration-500
+            hover:border-green-400/50
+            hover:shadow-[0_0_30px_rgba(74,222,128,0.12)]
+          "
         >
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <h3 className="text-base font-semibold text-slate-200 sm:text-xl">
-              {loading
-                ? "Loading GitHub activity..."
-                : `${totalContributions.toLocaleString()} contributions in the last year`}
-            </h3>
+          {/* CARD NEON TOP LINE */}
+
+          <div className="
+            pointer-events-none absolute left-0 top-0 h-[2px] w-full
+            bg-gradient-to-r from-transparent via-violet-400 to-green-400
+            opacity-70
+          " />
+
+          {/* CARD VIOLET GLOW */}
+
+          <div className="
+            pointer-events-none absolute -right-16 -top-16
+            h-40 w-40 rounded-full
+            bg-violet-600/20 blur-[70px]
+          " />
+
+          {/* CARD GREEN GLOW */}
+
+          <div className="
+            pointer-events-none absolute -bottom-20 -left-16
+            h-40 w-40 rounded-full
+            bg-green-500/10 blur-[70px]
+          " />
+
+          {/* CALENDAR HEADER */}
+
+          <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-100 sm:text-base">
+                {loading
+                  ? "Loading GitHub activity..."
+                  : `${totalContributions.toLocaleString()} contributions in the last year`}
+              </h3>
+
+              <p className="mt-1 text-[10px] text-green-300/70 sm:text-xs">
+                @{USERNAME}
+              </p>
+            </div>
 
             <button
               type="button"
               onClick={fetchGitHubData}
               disabled={loading}
-              className="flex items-center gap-2 text-xs text-slate-400 transition hover:text-cyan-300 disabled:opacity-50 sm:text-sm"
+              className="
+                flex items-center gap-1.5 rounded-lg
+                border border-violet-400/25
+                bg-violet-500/[0.06]
+                px-2.5 py-1.5 text-[10px] text-zinc-300
+                transition-all duration-300
+                hover:border-green-400/60
+                hover:bg-green-400/10
+                hover:text-green-300
+                hover:shadow-[0_0_15px_rgba(74,222,128,0.15)]
+                disabled:opacity-50 sm:text-xs
+              "
             >
               <RefreshCw
-                size={14}
+                size={12}
                 className={loading ? "animate-spin" : ""}
               />
-              Refresh activity
+              Refresh
             </button>
           </div>
 
+          {/* LOADING / ERROR / CALENDAR */}
+
           {error ? (
-            <div className="rounded-xl border border-red-400/20 bg-red-400/5 p-6 text-center">
-              <p className="text-sm text-red-300">{error}</p>
+            <div className="
+              rounded-lg border border-red-400/20
+              bg-red-400/5 p-5 text-center
+            ">
+              <p className="text-xs text-red-300">{error}</p>
+
               <button
                 onClick={fetchGitHubData}
-                className="mt-3 text-sm text-cyan-300 underline"
+                className="mt-2 text-xs text-green-300 underline"
               >
                 Try again
               </button>
             </div>
           ) : loading ? (
-            <div className="flex h-32 items-center justify-center">
-              <RefreshCw className="animate-spin text-cyan-400" size={26} />
+            <div className="flex h-24 items-center justify-center">
+              <RefreshCw
+                className="animate-spin text-violet-400"
+                size={23}
+              />
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto pb-3">
-                <div className="min-w-[650px]">
+              {/* CALENDAR GRID */}
+
+              <div className="overflow-x-auto pb-2">
+                <div className="min-w-[560px]">
+
+                  {/* MONTH LABELS */}
+
                   <div
-                    className="mb-2 grid gap-[3px]"
+                    className="mb-1.5 grid gap-[3px]"
                     style={{
                       gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
                     }}
@@ -338,7 +554,10 @@ export default function GitHubActivity() {
                       return (
                         <div
                           key={index}
-                          className="h-5 whitespace-nowrap text-[10px] text-slate-400 sm:text-xs"
+                          className="
+                            h-4 whitespace-nowrap
+                            text-[9px] text-zinc-500 sm:text-[10px]
+                          "
                         >
                           {month?.label}
                         </div>
@@ -346,8 +565,13 @@ export default function GitHubActivity() {
                     })}
                   </div>
 
-                  <div className="grid grid-cols-[25px_1fr] gap-2">
-                    <div className="grid grid-rows-7 gap-[3px] text-[10px] text-slate-500">
+                  {/* CONTRIBUTION SQUARES */}
+
+                  <div className="grid grid-cols-[22px_1fr] gap-1.5">
+                    <div className="
+                      grid grid-rows-7 gap-[3px]
+                      text-[9px] text-zinc-500
+                    ">
                       <span></span>
                       <span>Mon</span>
                       <span></span>
@@ -369,10 +593,25 @@ export default function GitHubActivity() {
                           className="grid grid-rows-7 gap-[3px]"
                         >
                           {week.map((day) => (
-                            <div
+                            <motion.div
                               key={day.date}
                               title={`${day.count} contributions on ${formattedDate(day.date)}`}
-                              className={`aspect-square w-full min-w-[5px] rounded-[2px] transition-all duration-200 hover:scale-125 hover:ring-1 hover:ring-cyan-300 ${levelColors[getLevel(day)]}`}
+                              whileHover={
+                                reduceMotion
+                                  ? {}
+                                  : {
+                                      scale: 1.4,
+                                      zIndex: 10,
+                                    }
+                              }
+                              className={`
+                                aspect-square w-full min-w-[5px]
+                                cursor-pointer rounded-[2px]
+                                ${levelColors[getLevel(day)]}
+                                transition-all duration-200
+                                hover:ring-1 hover:ring-green-300
+                                hover:shadow-[0_0_10px_rgba(74,222,128,0.8)]
+                              `}
                             />
                           ))}
                         </div>
@@ -382,117 +621,169 @@ export default function GitHubActivity() {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+              {/* CONTRIBUTION LEGEND */}
+
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                 <a
                   href="https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-slate-400 transition hover:text-cyan-300 sm:text-sm"
+                  className="
+                    text-[10px] text-zinc-500
+                    transition hover:text-violet-300 sm:text-xs
+                  "
                 >
-                  Learn how we count contributions ↗
+                  Learn how contributions work ↗
                 </a>
 
-                <div className="flex items-center gap-2 text-xs text-slate-400">
+                <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
                   <span>Less</span>
+
                   {levelColors.map((color, index) => (
                     <span
                       key={index}
-                      className={`h-3 w-3 rounded-[3px] ${color}`}
+                      className={`
+                        h-2.5 w-2.5 rounded-[2px]
+                        ${color}
+                        shadow-[0_0_5px_rgba(74,222,128,0.15)]
+                      `}
                     />
                   ))}
+
                   <span>More</span>
                 </div>
               </div>
             </>
           )}
+
+          {/* CARD BOTTOM NEON LINE */}
+
+          <div className="
+            pointer-events-none absolute bottom-0 left-0
+            h-[2px] w-full
+            bg-gradient-to-r from-green-400 via-violet-500 to-green-400
+            opacity-60
+          " />
         </motion.div>
 
+        {/* GITHUB STATS */}
+
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-violet-400/30 bg-[#0c1428]/80 p-4 shadow-[0_0_40px_rgba(139,92,246,0.08)] backdrop-blur-xl md:grid-cols-4 md:gap-0 md:p-5"
+          transition={{ duration: 0.7 }}
+          className="mt-8 flex flex-col items-center"
         >
-          <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
-            <Code2 className="shrink-0 text-cyan-400" size={30} />
-            <div className="min-w-0">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">
-                {loading ? "—" : totalContributions.toLocaleString()}
-              </h3>
-              <p className="text-xs text-slate-400 sm:text-sm">
-                Contributions
-              </p>
-            </div>
+          <div className="mb-4 text-center">
+            <h3 className="
+              text-xl font-extrabold tracking-[2px]
+              sm:text-2xl
+            ">
+              <span className="
+                text-green-400
+                drop-shadow-[0_0_12px_rgba(74,222,128,0.65)]
+              ">
+                GITHUB
+              </span>{" "}
+              <span className="
+                text-violet-400
+                drop-shadow-[0_0_12px_rgba(167,139,250,0.65)]
+              ">
+                STATS
+              </span>
+            </h3>
+
+            <div className="
+              mx-auto mt-2 h-[2px] w-12 rounded-full
+              bg-gradient-to-r from-green-400 to-violet-500
+              shadow-[0_0_12px_rgba(139,92,246,0.6)]
+            " />
           </div>
 
-          <div className="flex items-center gap-3 px-2 py-3 md:border-r md:border-white/10 md:px-4">
-            <Flame className="shrink-0 text-emerald-400" size={32} />
-            <div className="min-w-0">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">
-                {loading ? "—" : streaks.longest}
-              </h3>
-              <p className="text-xs text-slate-400 sm:text-sm">
-                Longest Streak
-              </p>
-            </div>
-          </div>
+          {/* STREAK CARD */}
 
-          <div className="flex items-center gap-3 border-r border-white/10 px-2 py-3 md:px-4">
-            <CalendarDays className="shrink-0 text-violet-400" size={30} />
-            <div className="min-w-0">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">
-                {loading ? "—" : streaks.current}
-              </h3>
-              <p className="text-xs text-slate-400 sm:text-sm">
-                Current Streak
-              </p>
-            </div>
-          </div>
-
-          <a
+          <motion.a
             href={`https://github.com/${USERNAME}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-2 py-3 transition hover:opacity-80 md:px-4"
+            whileHover={reduceMotion ? {} : { y: -5, scale: 1.02 }}
+            whileTap={reduceMotion ? {} : { scale: 0.98 }}
+            className="
+              group relative block w-full max-w-[410px]
+              overflow-hidden rounded-xl
+              border border-violet-500/30
+              bg-[#080510]/90
+              p-2.5 sm:p-3
+              shadow-[0_0_25px_rgba(139,92,246,0.12)]
+              backdrop-blur-xl
+              transition-all duration-500
+              hover:border-green-400/60
+              hover:shadow-[0_0_30px_rgba(74,222,128,0.2)]
+            "
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-300">
-              <Code2 size={23} />
-            </div>
+            {/* STREAK CARD GLOWS */}
 
-            <div className="min-w-0">
-              <h3 className="truncate text-sm font-bold text-white">
-                {profile?.login || USERNAME}
-              </h3>
-              <p className="flex items-center gap-1 text-xs text-emerald-400">
-                View Profile <ExternalLink size={12} />
-              </p>
-            </div>
-          </a>
+            <div className="
+              pointer-events-none absolute -right-8 -top-8
+              h-28 w-28 rounded-full
+              bg-violet-500/20 blur-[55px]
+            " />
+
+            <div className="
+              pointer-events-none absolute -bottom-10 -left-8
+              h-24 w-24 rounded-full
+              bg-green-500/15 blur-[50px]
+            " />
+
+            <img
+              src={STREAK_IMAGE}
+              alt={`${USERNAME}'s GitHub streak statistics`}
+              loading="lazy"
+              className="relative mx-auto block h-auto w-full"
+            />
+
+            {/* NEON BORDER ACCENT */}
+
+            <div className="
+              pointer-events-none absolute bottom-0 left-0
+              h-[2px] w-full
+              bg-gradient-to-r from-green-400 via-violet-500 to-green-400
+              opacity-70
+            " />
+          </motion.a>
+
+          {/* GITHUB PROFILE BUTTON */}
+
+          <motion.a
+            href={`https://github.com/${USERNAME}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={reduceMotion ? {} : { y: -3, scale: 1.03 }}
+            whileTap={reduceMotion ? {} : { scale: 0.97 }}
+            className="
+              group mt-4 inline-flex items-center gap-2
+              rounded-lg
+              border border-green-400/40
+              bg-green-400/[0.06]
+              px-4 py-2
+              text-xs font-semibold text-green-300
+              shadow-[0_0_12px_rgba(74,222,128,0.08)]
+              transition-all duration-300
+              hover:border-green-300
+              hover:bg-green-400/15
+              hover:text-white
+              hover:shadow-[0_0_25px_rgba(74,222,128,0.3)]
+            "
+          >
+            <Github
+              size={14}
+              className="transition-transform duration-300 group-hover:rotate-12"
+            />
+            View GitHub Profile
+            <ExternalLink size={12} />
+          </motion.a>
         </motion.div>
-
-        {profile && (
-          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500">
-            <span>
-              <strong className="text-slate-300">
-                {profile.public_repos}
-              </strong>{" "}
-              Public Repositories
-            </span>
-            <span>
-              <strong className="text-slate-300">
-                {profile.followers}
-              </strong>{" "}
-              Followers
-            </span>
-            <span>
-              <strong className="text-slate-300">
-                {profile.following}
-              </strong>{" "}
-              Following
-            </span>
-          </div>
-        )}
       </div>
     </section>
   );

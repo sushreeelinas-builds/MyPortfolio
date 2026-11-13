@@ -76,7 +76,7 @@ export default function Home() {
           
            
 
-          <p className="mb-3 mt-9 text-xs font-bold tracking-[5px] text-violet-300">
+          <p className="mb-3 mt- text-xs font-bold tracking-[5px] text-violet-300">
             HELLO, I'M
           </p>
 
@@ -176,17 +176,17 @@ export default function Home() {
               Explore My Work <ArrowUpRight size={17} />
             </motion.a>
 
-            <motion.a
-              href="#contact"
-              whileHover={reduceMotion ? {} : { y: -4, scale: 1.03 }}
-              whileTap={reduceMotion ? {} : { scale: 0.97 }}
-              className="inline-flex items-center gap-2 rounded-xl border border-violet-300/25 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-xl transition-colors hover:border-violet-300/60 hover:bg-violet-400/10"
-            >
-              Get In Touch
-            </motion.a>
+           <motion.a
+  href="#contact"
+  whileHover={reduceMotion ? {} : { y: -4, scale: 1.03 }}
+  whileTap={reduceMotion ? {} : { scale: 0.97 }}
+  className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-300 to-emerald-400 px-5 py-3.5 text-sm font-bold text-black shadow-[0_0_25px_rgba(74,222,128,0.12)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(74,222,128,0.3)]"
+>
+  Get In Touch
+</motion.a>
 
             <motion.a
-  href="/Sushree_Elina_Sahoo(Resume).pdf"
+  href="/Sushree_Elina_Sahoo(CV).pdf"
   target="_blank"
   rel="noopener noreferrer"
   whileHover={reduceMotion ? {} : { y: -4, scale: 1.03 }}

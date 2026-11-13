@@ -474,14 +474,11 @@ export default function Projects() {
               PROJECT
             </span>
 
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
-              <Sparkles size={14} />
-               SELECTED WORK
-            </div>
+           
 
-            <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
+            <h2 className="text-3xl font-bold tracking-[3px] text-white mb-20 sm:text-5xl">
               <span className="text-emerald-400">—</span>{" "}
-              Creative Work &  Projects{" "}
+             CREATIVE WORK & PROJECT 
               <span className="text-violet-400">—</span>
             </h2>
           </motion.div>

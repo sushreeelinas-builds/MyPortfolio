@@ -122,17 +122,14 @@ export default function Education() {
             className="relative mb-8 text-center"
           >
             <span className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-6xl font-black tracking-[12px] text-white/[0.025] sm:text-8xl lg:text-9xl">
-              EDUCTION
+              EDUCATION
             </span>
 
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
-              <Sparkles size={14} />
-                MY EDUCATION
-            </div>
+            
 
-            <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
+            <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl mb-20">
               <span className="text-emerald-400">—</span>{" "}
-              My Educational Journey.{" "}
+              MY EDUCATIONAL JOURNEY.{" "}
               <span className="text-violet-400">—</span>
             </h2>
           </motion.div>

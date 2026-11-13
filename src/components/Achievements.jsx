@@ -127,10 +127,7 @@ export default function Achievements() {
               ACHIEVEMENT
             </span>
 
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs tracking-[3px] text-emerald-300">
-              <Sparkles size={14} />
-               MY JOURNEY
-            </div>
+           
 
             <h2 className="text-3xl font-bold tracking-[3px] text-white sm:text-5xl">
               <span className="text-emerald-400">—</span>{" "}
